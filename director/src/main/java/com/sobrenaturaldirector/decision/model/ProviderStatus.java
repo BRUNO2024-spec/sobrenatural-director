@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.decision.model;
+
+public enum ProviderStatus { AVAILABLE, AVAILABLE_SUPPORTED, AVAILABLE_UNSUPPORTED_VERSION, MISSING, DISABLED, FAILED, FAILED_INITIALIZATION, UNSAFE, UNKNOWN }

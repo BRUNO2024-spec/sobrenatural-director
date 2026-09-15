@@ -1,0 +1,2 @@
+package com.sobrenaturaldirector.decision.constraint;
+public final class ConstraintResult { private final String id, reasonCode; private final ConstraintCategory category; private final boolean passed; public ConstraintResult(String id, ConstraintCategory category, boolean passed, String reasonCode){this.id=id;this.category=category;this.passed=passed;this.reasonCode=reasonCode;} public String getId(){return id;} public ConstraintCategory getCategory(){return category;} public boolean isPassed(){return passed;} public String getReasonCode(){return reasonCode;} }

@@ -1,0 +1,6 @@
+package com.sobrenaturaldirector.threat;
+
+public enum ThreatPhysicalObservation {
+    ENTITY_PRESENT, CHUNK_UNAVAILABLE, ENTITY_ABSENT, ENTITY_DEAD,
+    OWNERSHIP_MISMATCH, WORLD_UNAVAILABLE, PROVIDER_UNAVAILABLE, RESOLVED
+}

@@ -1,0 +1,769 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "key": "customnpcs:provider",
+      "provider": "customnpcs",
+      "kind": "OTHER_CAPABILITY",
+      "capabilities": [
+        "provider:custom_npc_provider",
+        "provider:narrative_actor_provider"
+      ],
+      "evidence": "STRONG_EVIDENCE",
+      "provenance": "ORIGINAL_MOD_AUDIT",
+      "registryResolvable": false,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_1G1_CUSTOMNPCS_FUTURE_ADAPTER_SURFACE"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:baby",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:bonnie_bunny",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:chica_chicken",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:endo",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:foxy_fox",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:fredbear",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:freddy_fazbear",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:funtime_freddy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:golden_freddy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:boss_like",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:nmrat",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:phantom_freddy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:plushtrap",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:pre_mangle",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:shadowbonnie",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:boss_like",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:shadowfreddy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:boss_like",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:springbonnie",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:springtrap",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:toy_bonnie",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:toy_chica",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:toy_freddy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:withered_bonnie",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:withered_foxy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:withered_freddy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "fnafuniversespawnaddon:withered_golden_freddy",
+      "provider": "fnafuniversespawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:boss_like",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "gravestone:catacomb",
+      "provider": "gravestone",
+      "kind": "STRUCTURE_CAPABILITY",
+      "capabilities": [
+        "structure:catacomb",
+        "structure:underground",
+        "theme:cemetery"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ORIGINAL_MOD_AUDIT",
+      "registryResolvable": false,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0B_GRAVESTONE_CAPABILITIES"
+      ]
+    },
+    {
+      "key": "minecraft:skeleton",
+      "provider": "minecraft",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:hostile",
+        "theme:undead"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "VANILLA_BUILTIN",
+      "registryResolvable": true,
+      "adapterRequired": false,
+      "execution": "NOT_EVALUATED",
+      "sources": [
+        "FOUNDATION_BUILTIN_MAPPING"
+      ]
+    },
+    {
+      "key": "minecraft:zombie",
+      "provider": "minecraft",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:hostile",
+        "theme:undead"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "VANILLA_BUILTIN",
+      "registryResolvable": true,
+      "adapterRequired": false,
+      "execution": "NOT_EVALUATED",
+      "sources": [
+        "FOUNDATION_BUILTIN_MAPPING"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:chiefmendez",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:drsalvador",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:esteban",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:ganado",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:garrador",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:krauser",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:licker",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:lisatrevor",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:maria",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:nemesis",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:rezombie",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:wesker",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile",
+        "content:special_unique"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:williambirkin",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:yawn",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    },
+    {
+      "key": "residentevilspawnaddon:zombiedog",
+      "provider": "residentevilspawnaddon",
+      "kind": "ENTITY",
+      "capabilities": [
+        "content:common_hostile",
+        "content:horror",
+        "content:hostile"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "ADDON_CONFIRMED",
+      "registryResolvable": true,
+      "adapterRequired": true,
+      "execution": "ADAPTER_REQUIRED",
+      "sources": [
+        "PHASE_0D2_ADDON_NATURAL_ENTITY_CATALOG"
+      ]
+    }
+  ]
+}

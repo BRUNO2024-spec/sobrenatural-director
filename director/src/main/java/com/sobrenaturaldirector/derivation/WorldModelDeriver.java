@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.derivation;
+import java.util.*; import com.sobrenaturaldirector.model.world.*; import com.sobrenaturaldirector.observation.model.*;
+public final class WorldModelDeriver { public WorldModel derive(WorldSnapshot w,ObservationStatus status){List<String> tags=new ArrayList<String>();WeatherBand weather=w.isThundering()?WeatherBand.THUNDER:(w.isRaining()?WeatherBand.RAIN:WeatherBand.CLEAR);return new WorldModel(w.getDimensionId(),w.getTotalWorldTime(),w.getTotalWorldTime()/24000L,(int)Math.floorMod(w.getWorldTime(),24000L),weather,w.getDifficultyId(),w.getPlayerCount(),tags,status==ObservationStatus.COMPLETE?Confidence.KNOWN:Confidence.PARTIAL);} }

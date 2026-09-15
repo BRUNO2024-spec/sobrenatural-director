@@ -1,0 +1,5 @@
+package com.sobrenaturaldirector.spatial.model;
+
+import com.sobrenaturaldirector.domain.StableId;import com.sobrenaturaldirector.spatial.geometry.*;
+
+public final class SpatialNodePlacement {private final String placementId,sourceNodeId;private final LocalAabb volume;private final LocalTransform transform;private final int verticalLayer;private final boolean mandatory;public SpatialNodePlacement(String id,String source,LocalAabb volume,LocalTransform transform,int layer,boolean mandatory){placementId=StableId.require(id,"placementId");sourceNodeId=StableId.require(source,"sourceNodeId");if(volume==null||transform==null)throw new IllegalArgumentException("invalid placement");this.volume=volume;this.transform=transform;verticalLayer=layer;this.mandatory=mandatory;}public String getPlacementId(){return placementId;}public String getSourceNodeId(){return sourceNodeId;}public LocalAabb getVolume(){return volume;}public LocalTransform getTransform(){return transform;}public int getVerticalLayer(){return verticalLayer;}public boolean isMandatory(){return mandatory;}}

@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "sobrenaturaldirector",
+    "name": "Sobrenatural Director",
+    "description": "Adaptive server-authoritative supernatural gameplay director foundation for Minecraft 1.7.10.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

@@ -1,0 +1,2 @@
+package com.sobrenaturaldirector.planner.replanning;
+public final class PlanFailure {private final String failureId,stepId,reasonCode;private final boolean retryable;private final long tick;public PlanFailure(String f,String s,String r,boolean retryable,long tick){failureId=f;stepId=s;reasonCode=r;this.retryable=retryable;this.tick=tick;}public String getFailureId(){return failureId;}public String getStepId(){return stepId;}public String getReasonCode(){return reasonCode;}public boolean isRetryable(){return retryable;}public long getTick(){return tick;}}

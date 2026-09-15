@@ -1,0 +1,5 @@
+package com.sobrenaturaldirector.composition.model;
+
+import java.util.*;
+
+public final class CompositionResult {private final CompositionStatus status;private final StructureBlueprint structure;private final List<EncounterBlueprint> encounters;private final List<RewardBlueprint> rewards;private final CompositionTrace trace;public CompositionResult(CompositionStatus status,StructureBlueprint structure,Collection<EncounterBlueprint> encounters,Collection<RewardBlueprint> rewards,CompositionTrace trace){this.status=status;this.structure=structure;this.encounters=Collections.unmodifiableList(new ArrayList<EncounterBlueprint>(encounters==null?Collections.<EncounterBlueprint>emptyList():encounters));this.rewards=Collections.unmodifiableList(new ArrayList<RewardBlueprint>(rewards==null?Collections.<RewardBlueprint>emptyList():rewards));this.trace=trace;}public CompositionStatus getStatus(){return status;}public StructureBlueprint getStructure(){return structure;}public List<EncounterBlueprint> getEncounters(){return encounters;}public List<RewardBlueprint> getRewards(){return rewards;}public CompositionTrace getTrace(){return trace;}}

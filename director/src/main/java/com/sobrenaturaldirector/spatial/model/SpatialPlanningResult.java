@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.spatial.model;
+import com.sobrenaturaldirector.spatial.trace.SpatialPlanningTrace;
+public final class SpatialPlanningResult {private final SpatialPlanningStatus status;private final AbstractSpatialPlan plan;private final SpatialPlanningTrace trace;public SpatialPlanningResult(SpatialPlanningStatus status,AbstractSpatialPlan plan,SpatialPlanningTrace trace){this.status=status;this.plan=plan;this.trace=trace;}public SpatialPlanningStatus getStatus(){return status;}public AbstractSpatialPlan getPlan(){return plan;}public SpatialPlanningTrace getTrace(){return trace;}}

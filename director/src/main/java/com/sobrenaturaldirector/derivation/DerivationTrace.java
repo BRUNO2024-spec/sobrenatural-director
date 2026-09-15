@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.derivation;
+import java.util.*;
+public final class DerivationTrace { public static final int MAX_RULES=256; private final List<DerivedSignal> signals; private final List<String> warnings; public DerivationTrace(List<DerivedSignal> signals,List<String> warnings){if(signals.size()>MAX_RULES||warnings.size()>MAX_RULES)throw new IllegalArgumentException("trace bound");this.signals=Collections.unmodifiableList(new ArrayList<DerivedSignal>(signals));this.warnings=Collections.unmodifiableList(new ArrayList<String>(warnings));} public List<DerivedSignal> getSignals(){return signals;} public List<String> getWarnings(){return warnings;} }

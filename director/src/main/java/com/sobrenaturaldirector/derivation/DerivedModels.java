@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.derivation;
+import java.util.*; import com.sobrenaturaldirector.model.player.PlayerModel; import com.sobrenaturaldirector.model.world.WorldModel;
+public final class DerivedModels { private final List<PlayerModel> players;private final List<WorldModel> worlds;private final DerivationTrace trace;public DerivedModels(List<PlayerModel>p,List<WorldModel>w,DerivationTrace t){players=Collections.unmodifiableList(new ArrayList<PlayerModel>(p));worlds=Collections.unmodifiableList(new ArrayList<WorldModel>(w));trace=t;}public List<PlayerModel>getPlayers(){return players;}public List<WorldModel>getWorlds(){return worlds;}public DerivationTrace getTrace(){return trace;} }

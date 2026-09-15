@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.decision;
+import com.sobrenaturaldirector.decision.model.CandidateAction; import com.sobrenaturaldirector.decision.trace.DecisionTrace;
+public final class DecisionResult { private final CandidateAction selected; private final DecisionTrace trace; public DecisionResult(CandidateAction selected,DecisionTrace trace){if(selected==null||trace==null)throw new IllegalArgumentException("decision result requires selected and trace");this.selected=selected;this.trace=trace;} public CandidateAction getSelected(){return selected;} public DecisionTrace getTrace(){return trace;} }

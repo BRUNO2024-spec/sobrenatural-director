@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.spatial.geometry;
+
+public final class LocalTransform {private final LocalVec3i translation;private final LocalOrientation orientation;private final int rotationQuarterTurns;public LocalTransform(LocalVec3i translation,LocalOrientation orientation,int rotationQuarterTurns){if(translation==null||orientation==null||rotationQuarterTurns<0||rotationQuarterTurns>3)throw new IllegalArgumentException("invalid local transform");this.translation=translation;this.orientation=orientation;this.rotationQuarterTurns=rotationQuarterTurns;}public LocalVec3i getTranslation(){return translation;}public LocalOrientation getOrientation(){return orientation;}public int getRotationQuarterTurns(){return rotationQuarterTurns;}}
