@@ -19,9 +19,13 @@ public final class FoundationConfig {
     private final boolean autonomousExecutionEnabled;
     private final boolean autonomousPlanningEnabled;
     private final boolean customNpcsProviderEnabled;
+    private final boolean shadowEnabled, shadowCollectExperience;
+    private final int shadowQueueCapacity;
+    private final String shadowModelPath, shadowExpectedModelSha256;
 
     private FoundationConfig(boolean enabled, DebugLevel debugLevel, boolean observationEnabled, int observationIntervalTicks,
-            boolean executionEnabled, boolean autonomousExecutionEnabled, boolean autonomousPlanningEnabled, boolean customNpcsProviderEnabled) {
+            boolean executionEnabled, boolean autonomousExecutionEnabled, boolean autonomousPlanningEnabled, boolean customNpcsProviderEnabled,
+            boolean shadowEnabled, boolean shadowCollectExperience, int shadowQueueCapacity, String shadowModelPath, String shadowExpectedModelSha256) {
         this.enabled = enabled;
         this.debugLevel = debugLevel;
         this.observationEnabled = observationEnabled;
@@ -30,6 +34,7 @@ public final class FoundationConfig {
         this.autonomousExecutionEnabled = autonomousExecutionEnabled;
         this.autonomousPlanningEnabled = autonomousPlanningEnabled;
         this.customNpcsProviderEnabled = customNpcsProviderEnabled;
+        this.shadowEnabled=shadowEnabled;this.shadowCollectExperience=shadowCollectExperience;this.shadowQueueCapacity=shadowQueueCapacity;this.shadowModelPath=shadowModelPath;this.shadowExpectedModelSha256=shadowExpectedModelSha256;
     }
 
     public static FoundationConfig load(File file, Logger logger) {
@@ -58,7 +63,12 @@ public final class FoundationConfig {
                     "Run bounded semantic planning only; never executes gameplay.");
             boolean customNpcs = config.getBoolean("enabled", "providers.customnpcs", true,
                     "Discover optional CustomNPCs provider; does not enable mutations or automatic execution.");
-            return new FoundationConfig(enabled, debug, observation, interval, execution, autonomousExecution, autonomousPlanning, customNpcs);
+            boolean shadow=config.getBoolean("enabled","shadow",false,"Observation-only learned scorer; never controls gameplay.");
+            boolean collect=config.getBoolean("collectExperience","shadow",false,"Collect objective observation facts locally; never assigns rewards.");
+            int capacity=config.getInt("queueCapacity","shadow",256,1,4096,"Bounded shadow queue capacity.");
+            String modelPath=config.getString("modelPath","shadow","config/sobrenatural-director/models/learned-scorer-v4.weights","External Java shadow model path.");
+            String modelSha=config.getString("expectedModelSha256","shadow","","Expected model SHA-256; empty keeps shadow invalid.");
+            return new FoundationConfig(enabled, debug, observation, interval, execution, autonomousExecution, autonomousPlanning, customNpcs, shadow, collect, capacity, modelPath, modelSha);
         } catch (RuntimeException exception) {
             logger.error("Foundation configuration failed; using safe defaults.", exception);
             return defaults();
@@ -67,7 +77,7 @@ public final class FoundationConfig {
         }
     }
 
-    public static FoundationConfig defaults() { return new FoundationConfig(DEFAULT_ENABLED, DEFAULT_DEBUG_LEVEL, true, 200, false, false, true, true); }
+    public static FoundationConfig defaults() { return new FoundationConfig(DEFAULT_ENABLED, DEFAULT_DEBUG_LEVEL, true, 200, false, false, true, true, false, false, 256, "config/sobrenatural-director/models/learned-scorer-v4.weights", ""); }
     public boolean isEnabled() { return enabled; }
     public DebugLevel getDebugLevel() { return debugLevel; }
     public boolean isObservationEnabled() { return observationEnabled; }
@@ -76,4 +86,5 @@ public final class FoundationConfig {
     public boolean isAutonomousExecutionEnabled() { return autonomousExecutionEnabled; }
     public boolean isAutonomousPlanningEnabled() { return autonomousPlanningEnabled; }
     public boolean isCustomNpcsProviderEnabled() { return customNpcsProviderEnabled; }
+    public boolean isShadowEnabled(){return shadowEnabled;} public boolean isShadowCollectExperienceEnabled(){return shadowCollectExperience;} public int getShadowQueueCapacity(){return shadowQueueCapacity;} public String getShadowModelPath(){return shadowModelPath;} public String getShadowExpectedModelSha256(){return shadowExpectedModelSha256;}
 }

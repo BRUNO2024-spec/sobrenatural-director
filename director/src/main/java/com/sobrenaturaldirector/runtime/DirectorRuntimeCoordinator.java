@@ -61,6 +61,7 @@ import com.sobrenaturaldirector.mutation.runtime.MutationExecutionResult;
 import com.sobrenaturaldirector.mutation.runtime.MutationOperation;
 import com.sobrenaturaldirector.execution.ExecutionOutcomeFeedbackCoordinator;
 import com.sobrenaturaldirector.execution.ExecutionOutcome;
+import com.sobrenaturaldirector.shadow.ShadowObservationService;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
@@ -75,7 +76,7 @@ public final class DirectorRuntimeCoordinator {
     private final FoundationConfig configuration;
     private final ObservationDerivationPipeline derivation = new ObservationDerivationPipeline();
     private final DecisionContextAssembler contexts = new DecisionContextAssembler();
-    private final DecisionEngine decisions = new DecisionEngine();
+    private final DecisionEngine decisions;
     private final DirectorPlanner planner = new DirectorPlanner();
     private final SemanticContentResolver resolver = new SemanticContentResolver();
     private final CompositionEngine composition = new CompositionEngine();
@@ -105,16 +106,22 @@ public final class DirectorRuntimeCoordinator {
     private int normalTickExecutionAttempts, normalTickApplied, normalTickDuplicateEffects, normalTickFeedbackApplied;
 
     public DirectorRuntimeCoordinator(ObservationCoordinator observation, FoundationConfig configuration) {
-        this(observation, configuration, new DirectorProviderRegistry());
+        this(observation, configuration, new DirectorProviderRegistry(), null);
     }
 
     public DirectorRuntimeCoordinator(ObservationCoordinator observation, FoundationConfig configuration, DirectorProviderRegistry providerRegistry) {
+        this(observation, configuration, providerRegistry, null);
+    }
+
+    /** Optional observation-only hook; null is the production default-off path. */
+    public DirectorRuntimeCoordinator(ObservationCoordinator observation, FoundationConfig configuration, DirectorProviderRegistry providerRegistry, ShadowObservationService shadow) {
         if (observation == null) throw new IllegalArgumentException("observation is required");
         if (configuration == null) throw new IllegalArgumentException("configuration is required");
         if (providerRegistry == null) throw new IllegalArgumentException("providerRegistry is required");
         this.observation = observation;
         this.configuration = configuration;
         this.providerRegistry = providerRegistry;
+        this.decisions = new DecisionEngine(shadow);
         this.autonomousScheduler = new com.sobrenaturaldirector.narrative.ControlledAutonomousPlanningScheduler(configuration.isAutonomousPlanningEnabled());
         this.catalog = SemanticCatalogResource.load(getClass().getClassLoader());
     }
