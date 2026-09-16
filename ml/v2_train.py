@@ -41,15 +41,14 @@ def main():
     history=[]
     for epoch in range(args.epochs):
         model.train(); total=0.0
-        for ix in order.split(args.batch_size):
-            pred=model(n[ix].to(device),c[ix].to(device)); loss=torch.nn.functional.mse_loss(pred,y[ix].to(device))
-            if args.objective in ("pairwise","hybrid"):
-                pidx=pair_order[(pair_order[:,0].unsqueeze(1)==ix).any(1)] if len(pair_order) else pair_order
-                if len(pidx):
-                    pa=model(n[pidx[:,0]].to(device),c[pidx[:,0]].to(device)); pb=model(n[pidx[:,1]].to(device),c[pidx[:,1]].to(device)); penalty=torch.relu(0.02-(pa-pb)).mean()
-                else: penalty=torch.tensor(0.0,device=device)
-                loss=penalty if args.objective=="pairwise" else loss+0.25*penalty
-            opt.zero_grad(); loss.backward(); opt.step(); total+=float(loss.item()); step+=1
+        if args.objective in ("pointwise","hybrid"):
+            for ix in order.split(args.batch_size):
+                loss=torch.nn.functional.mse_loss(model(n[ix].to(device),c[ix].to(device)),y[ix].to(device))
+                opt.zero_grad(); loss.backward(); opt.step(); total+=float(loss.item()); step+=1
+        if args.objective in ("pairwise","hybrid") and len(pair_order):
+            for pidx in pair_order[torch.randperm(len(pair_order),generator=torch.Generator().manual_seed(args.seed+epoch)).split(args.batch_size)]:
+                pa=model(n[pidx[:,0]].to(device),c[pidx[:,0]].to(device)); pb=model(n[pidx[:,1]].to(device),c[pidx[:,1]].to(device)); penalty=torch.relu(0.02-(pa-pb)).mean()
+                opt.zero_grad(); penalty.backward(); opt.step(); total+=float(penalty.item()); step+=1
         val=metrics(model,vn,vc,vy,vg,device); event={"epoch":epoch+1,"global_step":step,"train_loss":total,"validation":val}; history.append(event); print(json.dumps(event),flush=True)
         if val["meanRegret"]<best_rank: best_rank=val["meanRegret"]; best=val["mse"]; payload={"model_state_dict":model.state_dict(),"optimizer_state_dict":opt.state_dict(),"global_step":step,"epoch":epoch+1,"best_metric":best_rank,"config":vars(args),"cache_sha":d["manifest_sha"],"feature_schema":"DIRECTOR_EXPERIENCE_FEATURES_V3","preprocessing":d["preprocessing"],"vocab_sizes":d["vocab_sizes"]}; atomic_torch_save(payload,out/"best.pt")
     atomic_torch_save(payload,out/"latest.pt"); json.dump({"runId":args.run_id,"config":vars(args),"history":history,"best":metrics(model,vn,vc,vy,vg,device),"elapsed":time.time()-start,"parameters":sum(x.numel() for x in model.parameters()),"device":str(device)},open(out/"result.json","w"),indent=2)
