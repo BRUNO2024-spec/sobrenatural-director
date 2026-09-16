@@ -46,7 +46,8 @@ def main():
                 loss=torch.nn.functional.mse_loss(model(n[ix].to(device),c[ix].to(device)),y[ix].to(device))
                 opt.zero_grad(); loss.backward(); opt.step(); total+=float(loss.item()); step+=1
         if args.objective in ("pairwise","hybrid") and len(pair_order):
-            for pidx in pair_order[torch.randperm(len(pair_order),generator=torch.Generator().manual_seed(args.seed+epoch)).split(args.batch_size)]:
+            for order_idx in torch.randperm(len(pair_order),generator=torch.Generator().manual_seed(args.seed+epoch)).split(args.batch_size):
+                pidx=pair_order[order_idx]
                 pa=model(n[pidx[:,0]].to(device),c[pidx[:,0]].to(device)); pb=model(n[pidx[:,1]].to(device),c[pidx[:,1]].to(device)); penalty=torch.relu(0.02-(pa-pb)).mean()
                 opt.zero_grad(); penalty.backward(); opt.step(); total+=float(penalty.item()); step+=1
         val=metrics(model,vn,vc,vy,vg,device); event={"epoch":epoch+1,"global_step":step,"train_loss":total,"validation":val}; history.append(event); print(json.dumps(event),flush=True)
