@@ -35,8 +35,9 @@ cd /home/desktop/Documentos/director-shadow-server
 cat server.properties
 ```
 
-O template usa `online-mode=true`, whitelist, RCON/query desligados e porta
-`25565`.
+O servidor usa `online-mode=false`, `white-list=false`, RCON/query desligados
+e porta `25565`, conforme alteração operacional solicitada. Isso permite
+spoofing de username; a coleta Shadow continua exigindo consentimento.
 
 ## PARTE 6 — Abrir porta no Ubuntu
 
@@ -75,9 +76,8 @@ Não coloque FNaF, ObsidianAPI ou addons FNaF.
 
 ## PARTE 11 — Entrar pelo IP público
 
-Após Oracle ingress e teste externo, use `144.22.149.197:25565`. Esse IP foi
-detectado, mas ainda não foi confirmado externamente; use o IP do painel Oracle
-se ele divergir.
+Use `144.22.149.197:25565`. O teste feito na VPS é hairpin/local e não prova
+conectividade de um cliente externo.
 
 ## PARTE 12 — Aceitar participação na coleta
 

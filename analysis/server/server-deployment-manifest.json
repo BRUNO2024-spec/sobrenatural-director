@@ -15,7 +15,7 @@
     "sha256": "dd4ccebad2b7f94db74a27493c2418e7abdea5ee66509d39e2a3982538592af9",
     "loadStatus": "READY_ON_DEDICATED_BOOT"
   },
-  "authentication": "online-mode=true",
+  "authentication": "online-mode=false; username spoofing possible",
   "researchCollection": "DISABLED_PENDING_V4_LOADER_AND_CONSENT_WIRING",
   "protectedWorldCopied": false
 }
