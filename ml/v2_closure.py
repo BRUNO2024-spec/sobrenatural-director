@@ -17,9 +17,12 @@ def main():
         for r in rows: labels.append({'family':r['stateFeatures']['family'],'environment':r['stateFeatures']['environment'],'providerMode':r['stateFeatures']['providerMode'],'narrativeState':r['stateFeatures']['narrativeState'],'candidateKind':r['candidateFeatures']['candidateKind'],'episode':r['metadata']['episodeId'] is not None,'noAction':r['candidateFeatures']['candidateKind']=='no-action','stateId':r['metadata']['stateId'],'target':float(r['supervision']['teacherQuality'])})
         assert len(labels)==len(y)
         slices={}
-        for field in ('family','environment','providerMode','narrativeState','candidateKind','episode'):
-            for value in sorted(set(x[field] for x in labels),key=str):
-                ix=[i for i,x in enumerate(labels) if x[field]==value]; slices[field+'='+str(value)]={'size':len(ix),'metrics':scores(pred[ix],y[ix],g[ix])}
+        # Slice metrics are post-freeze diagnostics on held-out splits. The
+        # validation pass is reserved for the cheaper feature-mask ablations.
+        if split != 'validation':
+            for field in ('family','environment','providerMode','narrativeState','candidateKind','episode'):
+                for value in sorted(set(x[field] for x in labels),key=str):
+                    ix=[i for i,x in enumerate(labels) if x[field]==value]; slices[field+'='+str(value)]={'size':len(ix),'metrics':scores(pred[ix],y[ix],g[ix])}
         out[split+'_slices']=slices
         # NO_ACTION is evaluated at state level; false positives mean selecting it
         # when the teacher best candidate is not NO_ACTION.
