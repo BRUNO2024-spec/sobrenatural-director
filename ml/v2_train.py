@@ -1,8 +1,13 @@
 """V2 research trainer. It consumes a preprocessed V3 tensor cache."""
-import argparse, json, random, time
+import argparse, json, random, time, os, tempfile
 from pathlib import Path
 import torch
 from v2_model import LearnedScorerV2
+def atomic_torch_save(payload,path):
+    fd,tmp=tempfile.mkstemp(prefix=Path(path).name+".",suffix=".tmp",dir=Path(path).parent); os.close(fd)
+    try: torch.save(payload,tmp); os.replace(tmp,path)
+    finally:
+        if os.path.exists(tmp): os.unlink(tmp)
 
 def metrics(model,n,c,y,groups,device):
     model.eval(); out=[]
@@ -40,6 +45,6 @@ def main():
                 loss=penalty if args.objective=="pairwise" else loss+0.25*penalty
             opt.zero_grad(); loss.backward(); opt.step(); total+=float(loss.item()); step+=1
         val=metrics(model,vn,vc,vy,vg,device); event={"epoch":epoch+1,"global_step":step,"train_loss":total,"validation":val}; history.append(event); print(json.dumps(event),flush=True)
-        if val["meanRegret"]<best_rank: best_rank=val["meanRegret"]; best=val["mse"]; payload={"model_state_dict":model.state_dict(),"optimizer_state_dict":opt.state_dict(),"global_step":step,"epoch":epoch+1,"best_metric":best_rank,"config":vars(args),"cache_sha":d["cache_sha"]}; torch.save(payload,out/"best.pt")
-    torch.save(payload,out/"latest.pt"); json.dump({"runId":args.run_id,"config":vars(args),"history":history,"best":metrics(model,vn,vc,vy,vg,device),"elapsed":time.time()-start,"parameters":sum(x.numel() for x in model.parameters()),"device":str(device)},open(out/"result.json","w"),indent=2)
+        if val["meanRegret"]<best_rank: best_rank=val["meanRegret"]; best=val["mse"]; payload={"model_state_dict":model.state_dict(),"optimizer_state_dict":opt.state_dict(),"global_step":step,"epoch":epoch+1,"best_metric":best_rank,"config":vars(args),"cache_sha":d["cache_sha"],"feature_schema":"DIRECTOR_EXPERIENCE_FEATURES_V3","preprocessing":d["preprocessing"],"vocab_sizes":d["vocab_sizes"]}; atomic_torch_save(payload,out/"best.pt")
+    atomic_torch_save(payload,out/"latest.pt"); json.dump({"runId":args.run_id,"config":vars(args),"history":history,"best":metrics(model,vn,vc,vy,vg,device),"elapsed":time.time()-start,"parameters":sum(x.numel() for x in model.parameters()),"device":str(device)},open(out/"result.json","w"),indent=2)
 if __name__=="__main__": main()
