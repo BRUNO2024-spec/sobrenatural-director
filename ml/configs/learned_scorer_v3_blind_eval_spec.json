@@ -1,0 +1,18 @@
+{
+  "datasetName": "DIRECTOR_CROSS_EVAL_V1",
+  "generator": "ml/generate_experience_v3.py",
+  "generationSpecBaseSha256": "130da046644c16684e08e93b2349fd6f1d89dbcaccf390a98654cfc1151982b6",
+  "teacher": "DETERMINISTIC_BENCHMARK_TEACHER",
+  "teacherFingerprint": "3904dfd83c65bbf8b16d4aa2fd2fdfbac74711741cfa26d06b0686a8b16dc15d",
+  "stateIdPrefix": "CROSS-EVAL-V1-S-",
+  "episodeIdPrefix": "CROSS-EVAL-V1-E-",
+  "seedNamespace": "DIRECTOR_CROSS_EVAL_V1_SEED_424242",
+  "globalSeed": 424242,
+  "testStateGroups": 15000,
+  "holdoutStateGroups": 15000,
+  "splitPolicy": "dedicated blind evaluation split; no training source",
+  "requiredOverlap": {"TRAIN": 0, "VALIDATION": 0, "OLD_TEST": 0, "OLD_HOLDOUT": 0},
+  "generateOnlyAfterModelFreeze": true,
+  "targetReportsBeforeFreeze": false,
+  "inputsExclude": ["IDs", "seed", "split", "hashes", "supervision", "target", "post-decision"]
+}
