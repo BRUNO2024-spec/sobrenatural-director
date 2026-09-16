@@ -46,13 +46,21 @@ def main():
     for i in range(args.states):
         ep=i//ep_steps if i<episodes*ep_steps else None; step=i%ep_steps if ep is not None else 0; s=state(i,args.seed,ep,step); split=split_for(i,s,ep); sf=sha_obj(s); assert sf not in fps[split]; fps[split].add(sf); counts[split]["states"]+=1
         cs=candidates(s); scored=[(quality(s,c),c) for c in cs]; chosen=max(scored,key=lambda x:(x[0],x[1]))[1]
-        for c,q in scored:
+        for q,c in scored:
             cf={"candidateKind":c,"intent":{"ambient":"AMBIENT_HINT","continuation":"MYSTERY_PAYOFF","threat":"BOSS_ENCOUNTER","recovery":"RECOVERY","exploration":"LOOT_DISCOVERY","no-action":"NO_ACTION"}[c],"safety":"NON_DESTRUCTIVE" if c not in ("threat",) else "MAJOR","provider":"threat" if c=="threat" else "structure" if c in ("ambient","continuation","exploration") else "none","baseUtility":{"ambient":45,"continuation":60,"threat":70,"recovery":55,"exploration":50,"no-action":35}[c]}
             row={"metadata":{"schemaVersion":SCHEMA,"stateId":"V3-S-%07d"%i,"candidateId":"%s-%07d"%(c,i),"episodeId":"V3-E-%05d"%ep if ep is not None else None,"step":step if ep is not None else None,"split":split,"trainingAllowed":split=="TRAIN"},"stateFeatures":s,"candidateFeatures":cf,"supervision":{"teacherQuality":q,"teacherChosen":c==chosen,"targetProvenance":"DETERMINISTIC_BENCHMARK_TEACHER"}}
             write(split,row)
     for _,w in writers.values(): w.close()
     schema={"schemaVersion":SCHEMA,"metadataExcludedFromInput":["stateId","candidateId","episodeId","step","split","trainingAllowed"],"stateFeatures":sorted(state(0,args.seed).keys()),"candidateFeatures":["candidateKind","intent","safety","provider","baseUtility"],"supervision":["teacherQuality","teacherChosen"]}
     (root/"schema.json").write_text(json.dumps(schema,sort_keys=True,indent=2)+"\n"); spec={"runId":args.run_id,"seed":args.seed,"states":args.states,"generatorVersion":VERSION,"targetProvenance":"DETERMINISTIC_BENCHMARK_TEACHER"}; (root/"generation-config.json").write_text(json.dumps(spec,sort_keys=True,indent=2)+"\n")
-    manifest={"datasetName":"DIRECTOR_EXPERIENCE_DATASET_V3","datasetVersion":"DIRECTOR_EXPERIENCE_DATASET_V3","runId":args.run_id,"featureSchema":SCHEMA,"generatorVersion":VERSION,"globalSeed":args.seed,"totalStateGroups":args.states,"totalCandidateRows":sum(x["rows"] for x in counts.values()),"splits":counts,"sequenceEpisodes":episodes,"sequenceStates":min(args.states,episodes*ep_steps),"teacherProvenance":"DETERMINISTIC_BENCHMARK_TEACHER","teacherImplementation":"ml/generate_experience_v3.py::quality","featureSchemaSha256":sha_obj(schema),"generationSpecSha256":sha_obj(spec),"createdUtc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())}
+    shards=[]; hash_lines=[]
+    for path in sorted(root.glob("*/part-*.jsonl")):
+        data=path.read_bytes(); split=path.parent.name; item={"path":str(path.relative_to(root)),"split":split,"rows":sum(1 for _ in data.splitlines()),"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest()}; shards.append(item); hash_lines.append(item["sha256"]+"  "+item["path"])
+    (root/"hashes.sha256").write_text("\n".join(hash_lines)+"\n")
+    try: source_commit=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
+    except Exception: source_commit="unknown"
+    try: teacher_fingerprint=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    except Exception: teacher_fingerprint="unknown"
+    manifest={"datasetName":"DIRECTOR_EXPERIENCE_DATASET_V3","datasetVersion":"DIRECTOR_EXPERIENCE_DATASET_V3","runId":args.run_id,"sourceCommit":source_commit,"featureSchema":SCHEMA,"generatorVersion":VERSION,"globalSeed":args.seed,"totalStateGroups":args.states,"totalCandidateRows":sum(x["rows"] for x in counts.values()),"splits":counts,"sequenceEpisodes":episodes,"sequenceStates":min(args.states,episodes*ep_steps),"teacherProvenance":"DETERMINISTIC_BENCHMARK_TEACHER","teacherImplementation":"ml/generate_experience_v3.py::quality","teacherFingerprint":teacher_fingerprint,"featureSchemaSha256":sha_obj(schema),"generationSpecSha256":sha_obj(spec),"shardCount":len(shards),"shards":shards,"totalBytes":sum(x["bytes"] for x in shards),"createdUtc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())}
     (root/"manifest.json").write_text(json.dumps(manifest,sort_keys=True,indent=2)+"\n"); print(json.dumps(manifest,sort_keys=True))
 if __name__=="__main__": main()
