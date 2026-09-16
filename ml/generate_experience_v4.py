@@ -7,12 +7,12 @@ BUCKETS=[('TEMPORAL_EPISODIC',.10),('UNDER_SUPPORTED_COMPOSITIONS',.15),('HARD_P
 def qualifies(bucket,s,cs,ep):
  q=sorted((quality(s,c) for c in cs),reverse=True);margin=q[0]-q[1]
  no=quality(s,'no-action');best=max(q)
- if bucket=='UNDER_SUPPORTED_COMPOSITIONS':return s['environment']=='VANILLA_VILLAGE' and s['providerMode']=='THREAT_ONLY'
+ if bucket=='UNDER_SUPPORTED_COMPOSITIONS':return s['environment']=='VANILLA_VILLAGE' and s['providerMode'] in ('THREAT_ONLY','NONE')
  if bucket=='BOUNDARY_STATES':return margin<=.02
  if bucket=='HARD_PAIR_STATES':return .02<margin<=.08
- if bucket=='NO_ACTION_CONTEXTS':return abs(no-best)<=.08
+ if bucket=='NO_ACTION_CONTEXTS':return (not s['safetyKnown']) or s['cooldownActive'] or s['recoveryNeed']>.7 or s['fatigue']>.7
  if bucket=='TEMPORAL_EPISODIC':return ep is not None
- if bucket=='RARE_STRESS':return (not s['safetyKnown'] and s['isolation']>.65) or (s['fatigue']>.85 and s['recoveryNeed']>.75)
+ if bucket=='RARE_STRESS':return (not s['safetyKnown']) or (s['fatigue']>.8 and s['recoveryNeed']>.7)
  return ep is None
 def main():
  p=argparse.ArgumentParser();p.add_argument('--states',type=int,default=120000);p.add_argument('--seed',type=int,default=909090);p.add_argument('--out',required=True);p.add_argument('--run-id',required=True);a=p.parse_args();root=Path(a.out);splits={x:root/x for x in ('TRAIN','VALIDATION_IID','VALIDATION_STRESS')};[x.mkdir(parents=True,exist_ok=True) for x in splits.values()];counts={x:{'rows':0,'states':0,'shards':0} for x in splits};writers={}
