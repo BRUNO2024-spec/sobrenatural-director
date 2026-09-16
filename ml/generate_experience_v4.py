@@ -3,9 +3,17 @@ import argparse,hashlib,json,time
 from pathlib import Path
 from generate_experience_v3 import state,candidates,quality
 SCHEMA='DIRECTOR_EXPERIENCE_FEATURES_V4'
-def bucket(i):
- x=i%100
- return 'BROAD_IID_COVERAGE' if x<40 else 'UNDER_SUPPORTED_COMPOSITIONS' if x<55 else 'HARD_PAIR_STATES' if x<65 else 'BOUNDARY_STATES' if x<75 else 'NO_ACTION_CONTEXTS' if x<85 else 'TEMPORAL_EPISODIC' if x<95 else 'RARE_STRESS'
+BUCKETS=[('TEMPORAL_EPISODIC',.10),('UNDER_SUPPORTED_COMPOSITIONS',.15),('HARD_PAIR_STATES',.10),('BOUNDARY_STATES',.10),('NO_ACTION_CONTEXTS',.10),('RARE_STRESS',.05),('BROAD_IID_COVERAGE',.40)]
+def qualifies(bucket,s,cs,ep):
+ q=sorted((quality(s,c) for c in cs),reverse=True);margin=q[0]-q[1]
+ no=quality(s,'no-action');best=max(q)
+ if bucket=='UNDER_SUPPORTED_COMPOSITIONS':return s['environment']=='VANILLA_VILLAGE' and s['providerMode']=='THREAT_ONLY'
+ if bucket=='BOUNDARY_STATES':return margin<=.02
+ if bucket=='HARD_PAIR_STATES':return .02<margin<=.08
+ if bucket=='NO_ACTION_CONTEXTS':return abs(no-best)<=.08
+ if bucket=='TEMPORAL_EPISODIC':return ep is not None
+ if bucket=='RARE_STRESS':return (not s['safetyKnown'] and s['isolation']>.65) or (s['fatigue']>.85 and s['recoveryNeed']>.75)
+ return ep is None
 def main():
  p=argparse.ArgumentParser();p.add_argument('--states',type=int,default=120000);p.add_argument('--seed',type=int,default=909090);p.add_argument('--out',required=True);p.add_argument('--run-id',required=True);a=p.parse_args();root=Path(a.out);splits={x:root/x for x in ('TRAIN','VALIDATION_IID','VALIDATION_STRESS')};[x.mkdir(parents=True,exist_ok=True) for x in splits.values()];counts={x:{'rows':0,'states':0,'shards':0} for x in splits};writers={}
  def write(sp,row):
@@ -14,8 +22,14 @@ def main():
    if sp in writers:writers[sp][1].close()
    writers[sp]=(idx,(splits[sp]/('part-%05d.jsonl'%idx)).open('w',encoding='utf8'));counts[sp]['shards']+=1
   writers[sp][1].write(json.dumps(row,sort_keys=True,separators=(',',':'))+'\n');counts[sp]['rows']+=1
- for i in range(a.states):
-  ep=i//10 if i<20000 else None;step=i%10 if ep is not None else 0;s=state(i,a.seed,ep,step);split_key=ep if ep is not None else i;sp='VALIDATION_STRESS' if split_key%10==9 else 'VALIDATION_IID' if split_key%10==8 else 'TRAIN';b=bucket(i);cs=candidates(s);chosen=max(((quality(s,c),c) for c in cs),key=lambda z:(z[0],z[1]))[1];counts[sp]['states']+=1
+ quotas={k:int(a.states*pct) for k,pct in BUCKETS};quotas['BROAD_IID_COVERAGE']=a.states-sum(quotas.values());accepted=[];used=set();cursor=0
+ while len(accepted)<a.states:
+  ep=cursor//10 if cursor<20000 else None;step=cursor%10 if ep is not None else 0;s=state(cursor,a.seed,ep,step);cs=candidates(s)
+  for b,_ in BUCKETS:
+   if quotas[b] and qualifies(b,s,cs,ep):accepted.append((cursor,ep,step,s,b));quotas[b]-=1;used.add(cursor);break
+  cursor+=1
+ for i,ep,step,s,b in accepted:
+  split_key=ep if ep is not None else i;sp='VALIDATION_STRESS' if split_key%10==9 else 'VALIDATION_IID' if split_key%10==8 else 'TRAIN';cs=candidates(s);chosen=max(((quality(s,c),c) for c in cs),key=lambda z:(z[0],z[1]))[1];counts[sp]['states']+=1
   for c in cs:
    cf={'candidateKind':c,'intent':{'ambient':'AMBIENT_HINT','continuation':'MYSTERY_PAYOFF','threat':'BOSS_ENCOUNTER','recovery':'RECOVERY','exploration':'LOOT_DISCOVERY','no-action':'NO_ACTION'}[c],'safety':'NON_DESTRUCTIVE' if c!='threat' else 'MAJOR','provider':'threat' if c=='threat' else 'structure' if c in ('ambient','continuation','exploration') else 'none','baseUtility':{'ambient':45,'continuation':60,'threat':70,'recovery':55,'exploration':50,'no-action':35}[c]}
    write(sp,{'metadata':{'schemaVersion':SCHEMA,'stateId':'V4-S-%07d'%i,'candidateId':'V4-%s-%07d'%(c,i),'episodeId':'V4-E-%05d'%ep if ep is not None else None,'step':step if ep is not None else None,'split':sp,'trainingAllowed':sp=='TRAIN','curriculumBucket':b},'stateFeatures':s,'candidateFeatures':cf,'supervision':{'teacherQuality':quality(s,c),'teacherChosen':c==chosen,'targetProvenance':'DETERMINISTIC_BENCHMARK_TEACHER'}})
