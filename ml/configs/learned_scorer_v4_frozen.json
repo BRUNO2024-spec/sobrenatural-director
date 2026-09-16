@@ -1,0 +1,198 @@
+{
+  "architecture": {
+    "activation": "relu",
+    "dropout": 0.0,
+    "embeddingDim": 4,
+    "family": "MLP",
+    "hidden": [
+      128,
+      64
+    ],
+    "normalizationLayers": [],
+    "parameterCount": 15209
+  },
+  "batchSizePairs": 32768,
+  "categoricalFeatureOrder": [
+    "family",
+    "environment",
+    "providerMode",
+    "narrativeState",
+    "candidateKind",
+    "intent",
+    "safety",
+    "provider"
+  ],
+  "configVersion": "LEARNED_SCORER_V4_FROZEN_V1",
+  "curriculumSpecSha256": "f32d16e2a4c9dfc5d7df2217fcd4d26e552c71dd4e84d5871ae006bd73493de3",
+  "datasetManifestSha256": "c877f23c4b2bc572fd443ea75ea472fe5fcfb8ba7ec96d96df60d471cd8c0e9d",
+  "datasetVersion": "DIRECTOR_EXPERIENCE_DATASET_V4",
+  "epochs": 4,
+  "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V4",
+  "featureSchemaSha256": "c6de5c68b7c0744d50acdb012123f229bb796022259f9e17d64bf2fd913cf9d2",
+  "finalTrainPolicy": "TRAIN_ONLY_FIXED_EPOCHS",
+  "futureBlindSpecSha256": "f9f3cc05c8a4b1aa489cf6c7a8417cf7aea85612bb4d3c812bc9e0e12f198396",
+  "generationSpecSha256": "f32d16e2a4c9dfc5d7df2217fcd4d26e552c71dd4e84d5871ae006bd73493de3",
+  "javaExportSemantics": "dense linear layers, ReLU, embeddings, normalized numeric inputs, OOV index 0",
+  "normalization": {
+    "means": {
+      "baseUtility": 49.93532590845302,
+      "combatPower": 0.49900198097644144,
+      "cooldownActive": 0.16184049446119853,
+      "episodeStep": 0.7065022443840634,
+      "eventConcurrency": 1.9996058642620405,
+      "fatigue": 0.5705642326668459,
+      "healthRatio": 0.7246773233393249,
+      "isolation": 0.5004831419362018,
+      "memoryPressure": 1.9972072098971863,
+      "observingSite": 0.2198580713226439,
+      "pressure": 0.502854409005703,
+      "recentHigh": 0.18689001025151036,
+      "recoveryNeed": 0.5019704095279925,
+      "repetitionCount": 0.1420222348292576,
+      "safetyKnown": 0.9226458849641197,
+      "tension": 0.5027195566745095,
+      "threadActive": 0.11161207488579021,
+      "threadAgeBucket": 0.18816000318493525,
+      "underground": 0.2799956207140227
+    },
+    "stds": {
+      "baseUtility": 9.458916384999783,
+      "combatPower": 0.28901751616443977,
+      "cooldownActive": 0.3683044241028789,
+      "episodeStep": 1.9962127162208188,
+      "eventConcurrency": 1.4139333760867345,
+      "fatigue": 0.27565888563415314,
+      "healthRatio": 0.1588257977226337,
+      "isolation": 0.2886863120707448,
+      "memoryPressure": 1.4147195456847106,
+      "observingSite": 0.4141503347782434,
+      "pressure": 0.28793280405344696,
+      "recentHigh": 0.5247119582513238,
+      "recoveryNeed": 0.28892142219656597,
+      "repetitionCount": 0.4633753007844938,
+      "safetyKnown": 0.26715249563291765,
+      "tension": 0.28862624552166294,
+      "threadActive": 0.3148885828757197,
+      "threadAgeBucket": 0.58776211619509,
+      "underground": 0.44899674062847256
+    }
+  },
+  "numericFeatureOrder": [
+    "tension",
+    "pressure",
+    "fatigue",
+    "recoveryNeed",
+    "healthRatio",
+    "combatPower",
+    "isolation",
+    "underground",
+    "observingSite",
+    "safetyKnown",
+    "eventConcurrency",
+    "memoryPressure",
+    "cooldownActive",
+    "threadActive",
+    "threadAgeBucket",
+    "recentHigh",
+    "repetitionCount",
+    "episodeStep",
+    "baseUtility"
+  ],
+  "objective": {
+    "margin": 0.02,
+    "name": "pairwise",
+    "pairConstruction": "best teacher candidate against strictly lower-quality candidates",
+    "tieEpsilon": 1e-09
+  },
+  "oovPolicy": "index 0 (<UNK>)",
+  "optimizer": {
+    "learningRate": 0.001,
+    "name": "Adam",
+    "scheduler": "none",
+    "weightDecay": 0.0
+  },
+  "seedPolicy": [
+    7,
+    17,
+    27
+  ],
+  "selectionMetric": "0.6 * IID regret + 0.4 * STRESS regret",
+  "sourceCommit": "c26d8d8",
+  "teacherFingerprint": "3904dfd83c65bbf8b16d4aa2fd2fdfbac74711741cfa26d06b0686a8b16dc15d",
+  "vocabs": {
+    "candidateKind": [
+      "<UNK>",
+      "ambient",
+      "continuation",
+      "exploration",
+      "no-action",
+      "recovery",
+      "threat"
+    ],
+    "environment": [
+      "<UNK>",
+      "ESTABLISHED_PLAYER_AREA",
+      "PLAYER_MODIFIED_AREA",
+      "TEMPORARY_CAMP",
+      "UNKNOWN",
+      "VANILLA_VILLAGE",
+      "WILDERNESS"
+    ],
+    "family": [
+      "<UNK>",
+      "BUILDING_TENSION",
+      "CONTINUATION_OPPORTUNITY",
+      "DIMENSION_ISOLATION",
+      "FALSE_HIGH_INTENSITY_TEMPTATION",
+      "LOW_IMPACT_CONTINUATION",
+      "MULTIPLE_VALID_CHOICES",
+      "MULTI_PROVIDER",
+      "NOVELTY_PRESSURE",
+      "NO_ACTION_REQUIRED",
+      "PLAYER_BASE_NEARBY",
+      "PROVIDER_FIT_CONTRAST",
+      "PROVIDER_MISSING",
+      "PROVIDER_RETURNED",
+      "RECOVERY_REQUIRED",
+      "REPETITION_TRAP",
+      "THREAD_COMPETITION",
+      "THREAD_DORMANCY_RESUME",
+      "WILDERNESS"
+    ],
+    "intent": [
+      "<UNK>",
+      "AMBIENT_HINT",
+      "BOSS_ENCOUNTER",
+      "LOOT_DISCOVERY",
+      "MYSTERY_PAYOFF",
+      "NO_ACTION",
+      "RECOVERY"
+    ],
+    "narrativeState": [
+      "<UNK>",
+      "ACTIVE",
+      "DORMANT",
+      "NONE",
+      "SUSPENDED"
+    ],
+    "provider": [
+      "<UNK>",
+      "none",
+      "structure",
+      "threat"
+    ],
+    "providerMode": [
+      "<UNK>",
+      "ACTOR_ONLY",
+      "ALL_AVAILABLE",
+      "NONE",
+      "STRUCTURE_ONLY",
+      "THREAT_ONLY"
+    ],
+    "safety": [
+      "<UNK>",
+      "MAJOR",
+      "NON_DESTRUCTIVE"
+    ]
+  }
+}
