@@ -29,9 +29,15 @@ steps (speedup 0.49x), so one GPU is selected. The V2 frozen config is
 checkpoint is persisted outside Git under the learned-scorer-v2 checkpoint
 directory.
 
-This run deliberately does **not** claim final closure: the real process-kill
-resume proof, complete baseline/ablation table, CPU latency distribution,
-golden-vector parity, and Java export implementation were not completed.
-Consequently the acceptance gate is FAIL and Shadow Mode readiness is
-`INSUFFICIENT_EVIDENCE`. Production runtime, hard safety, protected world,
-and Shadow Mode remain unchanged.
+Engineering closure is now complete without changing the frozen model. A real
+two-process restart restored step 31, continued to step 32, restored Adam and
+Python/NumPy/torch CPU/CUDA RNG state, and passed compatibility guards.
+Diagnostic VALIDATION masks, post-freeze slices, NO_ACTION analysis, sequence
+analysis, boundary diagnostics, CPU timing, CPU/GPU parity, deterministic
+export, and 64-vector Python/Java 8 parity are recorded in the closure
+artifacts. Java pure inference is feasible for this MLP.
+
+The closure gate is PASS, while Shadow Mode readiness remains
+`INSUFFICIENT_EVIDENCE`: results imitate a synthetic deterministic teacher and
+do not establish real gameplay utility or player preferences. Production
+runtime, hard safety, protected world, and Shadow Mode remain unchanged.
