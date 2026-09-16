@@ -1,0 +1,15 @@
+{
+  "datasetVersion": "DIRECTOR_EXPERIENCE_DATASET_V3",
+  "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V3",
+  "generatorVersion": "director-experience-v3-generator-1",
+  "globalSeed": 20260916,
+  "requestedStateGroups": 60000,
+  "splitPolicy": {"train": 0.6, "validation": 0.2, "test": 0.1, "holdout": 0.1, "grouping": "state_or_episode", "holdoutRule": "reserved environment/provider compositional pair"},
+  "stateDimensions": ["family", "environment", "tension", "pressure", "fatigue", "recoveryNeed", "healthRatio", "combatPower", "isolation", "underground", "observingSite", "safetyKnown", "eventConcurrency", "providerMode", "narrativeState", "memoryPressure", "cooldownActive"],
+  "sequencePolicy": {"episodes": 1000, "stepsPerEpisode": 10, "sameSplit": true},
+  "candidateEnumeration": "all deterministic eligible benchmark actions plus NO_ACTION",
+  "targetProvenance": "DETERMINISTIC_BENCHMARK_TEACHER",
+  "shardRows": 10000,
+  "format": "canonical-jsonl",
+  "canonicalSerialization": "UTF-8, sorted keys, compact separators, newline-delimited"
+}
