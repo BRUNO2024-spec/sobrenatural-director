@@ -29,7 +29,7 @@ def main():
     random.seed(args.seed); torch.manual_seed(args.seed); d=torch.load(args.cache,map_location="cpu",weights_only=False); device=torch.device("cuda" if torch.cuda.is_available() else "cpu"); hidden=tuple([args.hidden]+[int(x) for x in args.layers.split(",") if x]) if args.layers else (args.hidden,); model=LearnedScorerV2(d["numeric_dim"],d["vocab_sizes"],hidden=hidden,dropout=args.dropout,activation=args.activation).to(device); opt=torch.optim.Adam(model.parameters(),lr=args.lr,weight_decay=args.wd); best=1e99; best_rank=1e99; step=0; start=time.time(); out=Path(args.out); out.mkdir(parents=True,exist_ok=True)
     if args.resume:
         ck=torch.load(args.resume,map_location=device,weights_only=False); model.load_state_dict(ck["model_state_dict"]); opt.load_state_dict(ck["optimizer_state_dict"]); step=ck["global_step"]
-    n,c,y,g=d["train_numeric"],d["train_categorical"],d["train_target"],d["train_groups"]; vn,vc,vy,vg=d["val_numeric"],d["val_categorical"],d["val_target"],d["val_groups"]; order=torch.randperm(len(y),generator=torch.Generator().manual_seed(args.seed));
+    n,c,y,g=d["train_numeric"],d["train_categorical"],d["train_target"],d["train_groups"]; vn,vc,vy,vg=d["validation_numeric"],d["validation_categorical"],d["validation_target"],d["validation_groups"]; order=torch.randperm(len(y),generator=torch.Generator().manual_seed(args.seed));
     history=[]
     for epoch in range(args.epochs):
         model.train(); total=0.0
