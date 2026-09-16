@@ -1,17 +1,34 @@
 {
-  "datasetVersion": "DIRECTOR_EXPERIENCE_DATASET_V4",
-  "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V4",
-  "generatorVersion": "director-experience-v4-generator-2",
-  "sourceCommit": "df58622",
-  "teacherFingerprint": "3904dfd83c65bbf8b16d4aa2fd2fdfbac74711741cfa26d06b0686a8b16dc15d",
-  "globalSeedNamespace": "DIRECTOR_EXPERIENCE_V4_SEED_909090",
-  "requestedStateGroups": 120000,
-  "curriculumBuckets": {"BROAD_IID_COVERAGE": 0.4, "UNDER_SUPPORTED_COMPOSITIONS": 0.15, "HARD_PAIR_STATES": 0.1, "BOUNDARY_STATES": 0.1, "NO_ACTION_CONTEXTS": 0.1, "TEMPORAL_EPISODIC": 0.1, "RARE_STRESS": 0.05},
   "candidatePolicy": "all deterministic eligible benchmark actions plus NO_ACTION",
-  "sequencePolicy": {"episodes": 2000, "stepsPerEpisode": 10, "sameSplit": true},
-  "splitPolicy": {"train": 0.8, "validationIid": 0.1, "validationStress": 0.1, "grouping": "state_or_episode"},
-  "shardRows": 10000,
   "canonicalSerialization": "UTF-8 sorted compact JSONL",
+  "curriculumBuckets": {
+    "BOUNDARY_STATES": 0.1,
+    "BROAD_IID_COVERAGE": 0.4,
+    "HARD_PAIR_STATES": 0.1,
+    "NO_ACTION_CONTEXTS": 0.1,
+    "RARE_STRESS": 0.05,
+    "TEMPORAL_EPISODIC": 0.1,
+    "UNDER_SUPPORTED_COMPOSITIONS": 0.15
+  },
+  "datasetVersion": "DIRECTOR_EXPERIENCE_DATASET_V4",
   "dedupPolicy": "exact canonical input fingerprints within and across splits",
-  "historicalOverlapPolicy": "zero overlap against all V3 and consumed V3 blind inputs/candidates"
+  "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V4",
+  "generatorVersion": "director-experience-v4-generator-3",
+  "globalSeedNamespace": "DIRECTOR_EXPERIENCE_V4_SEED_909090",
+  "historicalOverlapPolicy": "zero overlap against all V3 and consumed V3 blind inputs/candidates",
+  "requestedStateGroups": 120000,
+  "sequencePolicy": {
+    "episodes": 2000,
+    "sameSplit": true,
+    "stepsPerEpisode": 10
+  },
+  "shardRows": 10000,
+  "sourceCommit": "5673fd5019288a0e454658a1757e4a4301bd96dd",
+  "splitPolicy": {
+    "grouping": "state_or_episode",
+    "train": 0.8,
+    "validationIid": 0.1,
+    "validationStress": 0.1
+  },
+  "teacherFingerprint": "3904dfd83c65bbf8b16d4aa2fd2fdfbac74711741cfa26d06b0686a8b16dc15d"
 }
