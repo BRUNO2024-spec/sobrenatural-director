@@ -1,5 +1,5 @@
 """Strict, dependency-light reader and TRAIN-only preprocessing for V2."""
-import json
+import json, math
 from pathlib import Path
 
 SCHEMA = "DIRECTOR_BENCHMARK_FEATURES_V2"
@@ -12,8 +12,19 @@ def read_rows(path, split=None):
         if not line.strip(): continue
         row = json.loads(line)
         if row.get("schemaVersion") != SCHEMA: raise ValueError("incompatible feature schema")
+        validate_row(row)
         if split is None or row["split"] == split: rows.append(row)
     return rows
+
+def validate_row(row):
+    if not isinstance(row.get("stateFeatures"), dict) or not isinstance(row.get("candidateFeatures"), dict): raise ValueError("missing feature object")
+    forbidden={"quality","policyDecision","decision","selectedBlueprint","selectedIntent","selectedProvider","selectedIntensity","latency","decisionLatencyNanos"}
+    if forbidden.intersection(row["stateFeatures"]) or forbidden.intersection(row["candidateFeatures"]): raise ValueError("post-decision input")
+    if row.get("split") not in ("TRAIN","VALIDATION","TEST","HOLDOUT"): raise ValueError("invalid split")
+    if row["trainingAllowed"] != (row["split"]=="TRAIN"): raise ValueError("trainingAllowed mismatch")
+    if not math.isfinite(float(row["target"]["quality"])): raise ValueError("non-finite target")
+    for key in NUMERIC:
+        if not math.isfinite(numeric(row,key)): raise ValueError("non-finite input")
 
 def fit_transform(rows):
     if not rows or any(r["split"] != "TRAIN" for r in rows): raise ValueError("fit requires TRAIN only")
