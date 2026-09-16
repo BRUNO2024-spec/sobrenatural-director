@@ -1,0 +1,17 @@
+{
+  "datasetVersion": "DIRECTOR_EXPERIENCE_DATASET_V4",
+  "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V4",
+  "generatorVersion": "director-experience-v4-generator-1",
+  "sourceCommit": "pending-freeze-commit",
+  "teacherFingerprint": "3904dfd83c65bbf8b16d4aa2fd2fdfbac74711741cfa26d06b0686a8b16dc15d",
+  "globalSeedNamespace": "DIRECTOR_EXPERIENCE_V4_SEED_909090",
+  "requestedStateGroups": 120000,
+  "curriculumBuckets": {"BROAD_IID_COVERAGE": 0.4, "UNDER_SUPPORTED_COMPOSITIONS": 0.15, "HARD_PAIR_STATES": 0.1, "BOUNDARY_STATES": 0.1, "NO_ACTION_CONTEXTS": 0.1, "TEMPORAL_EPISODIC": 0.1, "RARE_STRESS": 0.05},
+  "candidatePolicy": "all deterministic eligible benchmark actions plus NO_ACTION",
+  "sequencePolicy": {"episodes": 2000, "stepsPerEpisode": 10, "sameSplit": true},
+  "splitPolicy": {"train": 0.8, "validationIid": 0.1, "validationStress": 0.1, "grouping": "state_or_episode"},
+  "shardRows": 10000,
+  "canonicalSerialization": "UTF-8 sorted compact JSONL",
+  "dedupPolicy": "exact canonical input fingerprints within and across splits",
+  "historicalOverlapPolicy": "zero overlap against all V3 and consumed V3 blind inputs/candidates"
+}

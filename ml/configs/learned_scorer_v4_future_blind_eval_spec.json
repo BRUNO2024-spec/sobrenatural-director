@@ -1,0 +1,18 @@
+{
+  "datasetName": "DIRECTOR_V4_BLIND_EVAL_V1",
+  "generator": "ml/generate_experience_v4.py",
+  "generatorVersion": "director-experience-v4-generator-1",
+  "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V4",
+  "teacherFingerprint": "3904dfd83c65bbf8b16d4aa2fd2fdfbac74711741cfa26d06b0686a8b16dc15d",
+  "generationSpecBaseSha256": "pending-v4-generation-spec-sha",
+  "seedNamespace": "DIRECTOR_V4_BLIND_EVAL_V1_SEED_515151",
+  "stateIdPrefix": "V4-BLIND-S-",
+  "episodeIdPrefix": "V4-BLIND-E-",
+  "globalSeed": 515151,
+  "testStateGroups": 20000,
+  "holdoutStateGroups": 20000,
+  "compositionalRules": ["reserve unseen valid environment/provider combinations", "reserve rare provider/candidate contexts"],
+  "generateOnlyAfterModelFreeze": true,
+  "datasetGenerated": false,
+  "targetsOpened": false
+}

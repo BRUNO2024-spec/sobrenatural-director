@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "DIRECTOR_EXPERIENCE_FEATURES_V4",
+  "stateFeatures": ["family", "environment", "tension", "pressure", "fatigue", "recoveryNeed", "healthRatio", "combatPower", "isolation", "underground", "observingSite", "safetyKnown", "eventConcurrency", "providerMode", "narrativeState", "memoryPressure", "cooldownActive", "threadActive", "threadAgeBucket", "recentHigh", "repetitionCount", "episodeStep"],
+  "candidateFeatures": ["candidateKind", "intent", "safety", "provider", "baseUtility"],
+  "metadataExcludedFromInput": ["stateId", "candidateId", "episodeId", "step", "split", "trainingAllowed", "curriculumBucket"],
+  "supervisionExcludedFromInput": ["teacherQuality", "teacherChosen", "targetProvenance"],
+  "preDecisionOnly": true,
+  "targetDerivedFeatures": false,
+  "postDecisionFeatures": false
+}
