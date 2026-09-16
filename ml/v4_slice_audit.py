@@ -13,6 +13,8 @@ def main():
   for field in ('family','environment','providerMode','narrativeState'):
    for val in sorted(set(r['stateFeatures'][field] for r in labels)):
     ix=[i for i,r in enumerate(labels) if r['stateFeatures'][field]==val];slices[field+'='+val]=metrics(pred[ix],y[ix],np.array([r['metadata']['stateId'] for r in labels])[ix])
-  ix=[i for i,r in enumerate(labels) if r['metadata'].get('episodeId') is not None];slices['sequence']=metrics(pred[ix],y[ix],np.array([r['metadata']['stateId'] for r in labels])[ix]);out[split.lower()]={'slices':slices,'worst':min(((v['regret'],k,v) for k,v in slices.items()),key=lambda z:z[0])}
+  ix=[i for i,r in enumerate(labels) if r['metadata'].get('episodeId') is not None];
+  if ix:slices['sequence']=metrics(pred[ix],y[ix],np.array([r['metadata']['stateId'] for r in labels])[ix])
+  out[split.lower()]={'slices':slices,'worst':max(((v['regret'],k,v) for k,v in slices.items()),key=lambda z:z[0])}
  json.dump(out,open(a.out,'w'),indent=2);print(json.dumps(out))
 if __name__=='__main__':main()
