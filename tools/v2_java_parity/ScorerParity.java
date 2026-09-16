@@ -2,7 +2,7 @@ package v2_java_parity;
 import java.io.*; import java.util.*;
 /** Test-only Java 8 scorer; it is not part of the Director runtime. */
 public final class ScorerParity {
-  static final class Model { double[][][] e; int[] ins,outs; double[][][] w,b;
+  static final class Model { double[][][] e; int[] ins,outs; double[][][] w; double[][] b;
     Model(Scanner s) { s.next(); int ec=s.nextInt(), dim=s.nextInt(); e=new double[ec][][]; for(int i=0;i<ec;i++){s.next();int n=s.nextInt();e[i]=new double[n][dim];for(int r=0;r<n;r++)for(int j=0;j<dim;j++)e[i][r][j]=s.nextDouble();} s.next();int lc=s.nextInt();ins=new int[lc];outs=new int[lc];w=new double[lc][][];b=new double[lc][];for(int i=0;i<lc;i++){s.next();ins[i]=s.nextInt();outs[i]=s.nextInt();w[i]=new double[outs[i]][ins[i]];for(int r=0;r<outs[i];r++)for(int j=0;j<ins[i];j++)w[i][r][j]=s.nextDouble();b[i]=new double[outs[i]];for(int r=0;r<outs[i];r++)b[i][r]=s.nextDouble();} }
     double score(double[] x,int[] c){double[] z=new double[x.length+e.length*4];System.arraycopy(x,0,z,0,x.length);int k=x.length;for(int i=0;i<e.length;i++){int id=c[i];if(id<0||id>=e[i].length)id=0;for(int j=0;j<4;j++)z[k++]=e[i][id][j];}for(int l=0;l<w.length;l++){double[] q=new double[outs[l]];for(int r=0;r<outs[l];r++){q[r]=b[l][r];for(int j=0;j<ins[l];j++)q[r]+=w[l][r][j]*z[j];if(l<w.length-1&&q[r]<0)q[r]=0;}z=q;}return z[0];}
   }
