@@ -1,0 +1,122 @@
+{
+  "architecture": {
+    "dropout": 0.0,
+    "embeddingDim": 4,
+    "hidden": 32,
+    "layers": 1,
+    "name": "LearnedScorerV1",
+    "numericDim": 7,
+    "parameters": 1029,
+    "vocabSizes": [
+      7,
+      5,
+      6,
+      3,
+      4
+    ]
+  },
+  "batchSize": 1997,
+  "featureOrder": [
+    "hardValid",
+    "noAction",
+    "providerAvailable",
+    "continuation",
+    "recentHigh",
+    "dimension",
+    "baseUtility",
+    "environment",
+    "candidateKind",
+    "intent",
+    "safety",
+    "provider"
+  ],
+  "holdoutPolicy": "single separate frozen evaluation",
+  "learningRate": 0.003,
+  "loss": "MSE",
+  "maxEpochs": 25,
+  "optimizer": "Adam",
+  "preprocessing": {
+    "categorical": [
+      "environment",
+      "candidateKind",
+      "intent",
+      "safety",
+      "provider"
+    ],
+    "means": {
+      "baseUtility": 72.8843264897346,
+      "continuation": 0.7346019028542814,
+      "dimension": -0.21331997996995494,
+      "hardValid": 0.8442663995993991,
+      "noAction": 0.11717576364546821,
+      "providerAvailable": 0.8963445167751627,
+      "recentHigh": 0.15222834251377065
+    },
+    "numeric": [
+      "hardValid",
+      "noAction",
+      "providerAvailable",
+      "continuation",
+      "recentHigh",
+      "dimension",
+      "baseUtility"
+    ],
+    "stds": {
+      "baseUtility": 14.233658533998135,
+      "continuation": 0.4415449548767943,
+      "dimension": 0.4096517620071626,
+      "hardValid": 0.36260260079992096,
+      "noAction": 0.3216296069387418,
+      "providerAvailable": 0.3048130968680033,
+      "recentHigh": 0.5303614020298343
+    },
+    "vocab": {
+      "candidateKind": [
+        "<UNK>",
+        "a-ambient",
+        "b-continuation",
+        "c-threat",
+        "z-no-action"
+      ],
+      "environment": [
+        "<UNK>",
+        "ESTABLISHED_PLAYER_AREA",
+        "PLAYER_MODIFIED_AREA",
+        "TEMPORARY_CAMP",
+        "UNKNOWN",
+        "VANILLA_VILLAGE",
+        "WILDERNESS"
+      ],
+      "intent": [
+        "<UNK>",
+        "AMBIENT_HINT",
+        "BOSS_ENCOUNTER",
+        "MYSTERY_PAYOFF",
+        "NO_ACTION",
+        "RECOVERY"
+      ],
+      "provider": [
+        "<UNK>",
+        "null",
+        "structure",
+        "threat"
+      ],
+      "safety": [
+        "<UNK>",
+        "MAJOR",
+        "NON_DESTRUCTIVE"
+      ]
+    }
+  },
+  "scheduler": null,
+  "schemaVersion": "DIRECTOR_BENCHMARK_FEATURES_V2",
+  "seed": 7,
+  "selectionMetric": "validation_pairwise_accuracy",
+  "testPolicy": "single frozen evaluation",
+  "tieBreakers": [
+    "lower_mean_regret",
+    "smaller_parameter_count",
+    "lower_cpu_inference_cost"
+  ],
+  "weightDecay": 0.0
+}
