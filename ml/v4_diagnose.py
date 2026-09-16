@@ -27,7 +27,7 @@ def margins(rs):
  return out
 def combos(rs):
  g=state_groups(rs);out={}
- for name,fn in {'environment_provider':lambda r:(r['stateFeatures']['environment'],r['stateFeatures']['providerMode']),'family_candidate':lambda r:(r['stateFeatures']['family'],r['candidateFeatures']['candidateKind']),'narrative_candidate':lambda r:(r['stateFeatures']['narrativeState'],r['candidateFeatures']['candidateKind']),'provider_candidate':lambda r:(r['stateFeatures']['providerMode'],r['candidateFeatures']['provider'])}.items():out[name]=dict(collections.Counter(fn(z[0]) for z in g.values()))
+ for name,fn in {'environment_provider':lambda r:(r['stateFeatures']['environment'],r['stateFeatures']['providerMode']),'family_candidate':lambda r:(r['stateFeatures']['family'],r['candidateFeatures']['candidateKind']),'narrative_candidate':lambda r:(r['stateFeatures']['narrativeState'],r['candidateFeatures']['candidateKind']),'provider_candidate':lambda r:(r['stateFeatures']['providerMode'],r['candidateFeatures']['provider'])}.items():out[name]={"|".join(k):v for k,v in collections.Counter(fn(z[0]) for z in g.values()).items()}
  return out
 def main():
  p=argparse.ArgumentParser();p.add_argument('--v3',required=True);p.add_argument('--blind',required=True);p.add_argument('--out',required=True);a=p.parse_args(); result={'v3_train':summarize(rows(a.v3,'TRAIN')),'v3_validation':summarize(rows(a.v3,'VALIDATION')),'blind_test':summarize(rows(a.blind,'TEST')),'blind_holdout':summarize(rows(a.blind,'HOLDOUT'))}
