@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "DIRECTOR_BENCHMARK_FEATURES_V2",
+  "seed": 7,
+  "hidden": 32,
+  "embeddingDim": 4,
+  "optimizer": "Adam",
+  "learningRate": 0.001,
+  "loss": "MSE",
+  "runtimeMode": "shadow"
+}
