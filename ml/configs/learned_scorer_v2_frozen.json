@@ -1,0 +1,189 @@
+{
+  "dataset_version": "DIRECTOR_EXPERIENCE_DATASET_V3",
+  "dataset_manifest_sha256": "10de28923e0251d67befd53b25400c781f7e6315d96250d5db616e69eb788b7d",
+  "feature_schema": "DIRECTOR_EXPERIENCE_FEATURES_V3",
+  "feature_schema_sha256": "58ab4686dad7ba7dac5df96343668c648ca875f6013b40f97de5318aa6870ccc",
+  "generation_spec_sha256": "130da046644c16684e08e93b2349fd6f1d89dbcaccf390a98654cfc1151982b6",
+  "teacher_fingerprint": "3904dfd83c65bbf8b16d4aa2fd2fdfbac74711741cfa26d06b0686a8b16dc15d",
+  "numeric_feature_order": [
+    "tension",
+    "pressure",
+    "fatigue",
+    "recoveryNeed",
+    "healthRatio",
+    "combatPower",
+    "isolation",
+    "underground",
+    "observingSite",
+    "safetyKnown",
+    "eventConcurrency",
+    "memoryPressure",
+    "cooldownActive",
+    "threadActive",
+    "threadAgeBucket",
+    "recentHigh",
+    "repetitionCount",
+    "episodeStep",
+    "baseUtility"
+  ],
+  "categorical_feature_order": [
+    "family",
+    "environment",
+    "providerMode",
+    "narrativeState",
+    "candidateKind",
+    "intent",
+    "safety",
+    "provider"
+  ],
+  "vocabs": {
+    "family": [
+      "<UNK>",
+      "BUILDING_TENSION",
+      "CONTINUATION_OPPORTUNITY",
+      "DIMENSION_ISOLATION",
+      "FALSE_HIGH_INTENSITY_TEMPTATION",
+      "LOW_IMPACT_CONTINUATION",
+      "MULTIPLE_VALID_CHOICES",
+      "MULTI_PROVIDER",
+      "NOVELTY_PRESSURE",
+      "NO_ACTION_REQUIRED",
+      "PLAYER_BASE_NEARBY",
+      "PROVIDER_FIT_CONTRAST",
+      "PROVIDER_MISSING",
+      "PROVIDER_RETURNED",
+      "RECOVERY_REQUIRED",
+      "REPETITION_TRAP",
+      "THREAD_COMPETITION",
+      "THREAD_DORMANCY_RESUME",
+      "WILDERNESS"
+    ],
+    "environment": [
+      "<UNK>",
+      "ESTABLISHED_PLAYER_AREA",
+      "PLAYER_MODIFIED_AREA",
+      "TEMPORARY_CAMP",
+      "UNKNOWN",
+      "VANILLA_VILLAGE",
+      "WILDERNESS"
+    ],
+    "providerMode": [
+      "<UNK>",
+      "ACTOR_ONLY",
+      "ALL_AVAILABLE",
+      "NONE",
+      "STRUCTURE_ONLY",
+      "THREAT_ONLY"
+    ],
+    "narrativeState": [
+      "<UNK>",
+      "ACTIVE",
+      "DORMANT",
+      "NONE",
+      "SUSPENDED"
+    ],
+    "candidateKind": [
+      "<UNK>",
+      "ambient",
+      "continuation",
+      "exploration",
+      "no-action",
+      "recovery",
+      "threat"
+    ],
+    "intent": [
+      "<UNK>",
+      "AMBIENT_HINT",
+      "BOSS_ENCOUNTER",
+      "LOOT_DISCOVERY",
+      "MYSTERY_PAYOFF",
+      "NO_ACTION",
+      "RECOVERY"
+    ],
+    "safety": [
+      "<UNK>",
+      "MAJOR",
+      "NON_DESTRUCTIVE"
+    ],
+    "provider": [
+      "<UNK>",
+      "none",
+      "structure",
+      "threat"
+    ]
+  },
+  "oov_policy": "index 0 (<UNK>)",
+  "normalization": {
+    "means": {
+      "tension": 0.4997943329113827,
+      "pressure": 0.49455198376392423,
+      "fatigue": 0.4906018423820851,
+      "recoveryNeed": 0.5006433875013808,
+      "healthRatio": 0.725122442251333,
+      "combatPower": 0.5012297312982802,
+      "isolation": 0.5004917337327537,
+      "underground": 0.2790091050775162,
+      "observingSite": 0.222027178519673,
+      "safetyKnown": 0.9217728925710224,
+      "eventConcurrency": 2.0042107565690537,
+      "memoryPressure": 1.999485959587674,
+      "cooldownActive": 0.1589423891942143,
+      "threadActive": 0.11838788177070517,
+      "threadAgeBucket": 0.2088316517649632,
+      "recentHigh": 0.20209444125447734,
+      "repetitionCount": 0.15131927924971975,
+      "episodeStep": 0.7778142345446094,
+      "baseUtility": 49.89803953736363
+    },
+    "stds": {
+      "tension": 0.2895107044480768,
+      "pressure": 0.29373142243508893,
+      "fatigue": 0.28440790612474987,
+      "recoveryNeed": 0.288109727971482,
+      "healthRatio": 0.15865430524467114,
+      "combatPower": 0.28874761405118027,
+      "isolation": 0.2887369793625217,
+      "underground": 0.4485120113902857,
+      "observingSite": 0.41560932438801973,
+      "safetyKnown": 0.26852863365435137,
+      "eventConcurrency": 1.41248937276963,
+      "memoryPressure": 1.4129678029192734,
+      "cooldownActive": 0.36562235450181274,
+      "threadActive": 0.32306685255617096,
+      "threadAgeBucket": 0.6150934567449434,
+      "recentHigh": 0.5430696634257759,
+      "repetitionCount": 0.4777489175694288,
+      "episodeStep": 2.086611464967543,
+      "baseUtility": 9.428034524727224
+    }
+  },
+  "architecture": {
+    "embedding_dim": 4,
+    "hidden_dims": [
+      64
+    ],
+    "activation": "relu",
+    "dropout": 0.0,
+    "parameter_count": 3625
+  },
+  "objective": "pairwise",
+  "tie_epsilon": 1e-09,
+  "ranking_policy": "same-state winner-versus-lower-quality pairs",
+  "optimizer": {
+    "name": "Adam",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0
+  },
+  "batch_size": 32768,
+  "effective_batch_size": 32768,
+  "device_strategy": "one GPU",
+  "seed_policy": [
+    7,
+    17,
+    27
+  ],
+  "epochs": 6,
+  "model_freeze": "PASS",
+  "source_commit": "b0c5e28",
+  "frozen_config_sha256": "eb40e263d739c64e68dbb267e8a053a36713a9ae0a0b7aae1b9a5fe7bc3a1a0b"
+}
