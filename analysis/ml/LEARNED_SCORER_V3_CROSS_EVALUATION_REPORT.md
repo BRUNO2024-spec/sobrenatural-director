@@ -24,3 +24,9 @@ against every old V3 split were zero. Blind TEST pairwise/top-1/regret were
 This proves only synthetic deterministic-teacher generalization. It does not
 prove real gameplay or player-preference generalization. Shadow Mode remains
 disabled and readiness remains `INSUFFICIENT_EVIDENCE`.
+
+The final checkpoint (`cd439945855539ed4a8d9e62c7296801b6ab7f071dcb415fcbf46ca1bad3340a`)
+contains frozen provenance, preprocessing, optimizer state, and atomic-write
+metadata. The V3 checkpoint restart proof restored the saved step and advanced
+one step in a new process. No production JAR or Minecraft runtime source was
+changed.
