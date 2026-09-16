@@ -22,7 +22,7 @@ def main():
    if sp in writers:writers[sp][1].close()
    writers[sp]=(idx,(splits[sp]/('part-%05d.jsonl'%idx)).open('w',encoding='utf8'));counts[sp]['shards']+=1
   writers[sp][1].write(json.dumps(row,sort_keys=True,separators=(',',':'))+'\n');counts[sp]['rows']+=1
- quotas={k:int(a.states*pct) for k,pct in BUCKETS};quotas['BROAD_IID_COVERAGE']=a.states-sum(quotas.values());accepted=[];used=set();cursor=0
+ quotas={k:int(a.states*pct) for k,pct in BUCKETS};quotas['BROAD_IID_COVERAGE']=a.states-sum(int(a.states*pct) for k,pct in BUCKETS if k!='BROAD_IID_COVERAGE');accepted=[];used=set();cursor=0
  while len(accepted)<a.states:
   ep=cursor//10 if cursor<20000 else None;step=cursor%10 if ep is not None else 0;s=state(cursor,a.seed,ep,step);cs=candidates(s)
   for b,_ in BUCKETS:
