@@ -3,11 +3,11 @@ import argparse,hashlib,json,time
 from pathlib import Path
 from generate_experience_v3 import state,candidates,quality
 SCHEMA='DIRECTOR_EXPERIENCE_FEATURES_V4'
-BUCKETS=[('TEMPORAL_EPISODIC',.10),('UNDER_SUPPORTED_COMPOSITIONS',.15),('HARD_PAIR_STATES',.10),('BOUNDARY_STATES',.10),('NO_ACTION_CONTEXTS',.10),('RARE_STRESS',.05),('BROAD_IID_COVERAGE',.40)]
+BUCKETS=[('TEMPORAL_EPISODIC',.10),('RARE_STRESS',.05),('UNDER_SUPPORTED_COMPOSITIONS',.15),('HARD_PAIR_STATES',.10),('BOUNDARY_STATES',.10),('NO_ACTION_CONTEXTS',.10),('BROAD_IID_COVERAGE',.40)]
 def qualifies(bucket,s,cs,ep):
  q=sorted((quality(s,c) for c in cs),reverse=True);margin=q[0]-q[1]
  no=quality(s,'no-action');best=max(q)
- if bucket=='UNDER_SUPPORTED_COMPOSITIONS':return s['environment']=='VANILLA_VILLAGE' and s['providerMode'] in ('THREAT_ONLY','NONE')
+ if bucket=='UNDER_SUPPORTED_COMPOSITIONS':return s['environment'] in ('VANILLA_VILLAGE','UNKNOWN','WILDERNESS') and s['providerMode'] in ('THREAT_ONLY','NONE')
  if bucket=='BOUNDARY_STATES':return margin<=.02
  if bucket=='HARD_PAIR_STATES':return .02<margin<=.08
  if bucket=='NO_ACTION_CONTEXTS':return (not s['safetyKnown']) or s['cooldownActive'] or s['recoveryNeed']>.7 or s['fatigue']>.7
@@ -28,6 +28,8 @@ def main():
   for b,_ in BUCKETS:
    if quotas[b] and qualifies(b,s,cs,ep):accepted.append((cursor,ep,step,s,b));quotas[b]-=1;used.add(cursor);break
   cursor+=1
+  if cursor > max(1000000, a.states*20):
+   raise RuntimeError('curriculum quotas are not attainable within bounded fresh namespace')
  for i,ep,step,s,b in accepted:
   split_key=ep if ep is not None else i;sp='VALIDATION_STRESS' if split_key%10==9 else 'VALIDATION_IID' if split_key%10==8 else 'TRAIN';cs=candidates(s);chosen=max(((quality(s,c),c) for c in cs),key=lambda z:(z[0],z[1]))[1];counts[sp]['states']+=1
   for c in cs:
