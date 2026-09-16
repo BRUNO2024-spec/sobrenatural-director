@@ -1,8 +1,8 @@
 # Guia do servidor Director Research (Forge 1.7.10)
 
-> Estado atual: o servidor mínimo foi criado e testado localmente, mas a
-> coleta Shadow V4 permanece desligada até concluir o loader Java e a ligação
-> consentimento→coleta. Não anuncie o endereço como servidor de pesquisa ainda.
+> Estado atual: o runtime Shadow V4 foi validado localmente e está pronto para
+> validação de campo controlada. A porta Oracle continua fechada até decisão
+> manual do administrador.
 
 ## PARTE 1 — O que vamos instalar
 
@@ -81,10 +81,9 @@ se ele divergir.
 
 ## PARTE 12 — Aceitar participação na coleta
 
-Quando a coleta estiver habilitada, o jogador deverá usar:
-`/director consent accept`. Sem isso não deve haver registro de pesquisa.
-Atualmente o serviço Shadow está desligado, portanto este comando apenas
-registra a preferência de sessão.
+O jogador deverá usar `/director consent accept`. Sem isso não há registro de
+pesquisa. `decline` mantém a sessão fora da coleta e `revoke` interrompe novos
+registros imediatamente.
 
 ## PARTE 13 — Verificar Shadow status
 

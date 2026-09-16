@@ -24,6 +24,10 @@ import com.sobrenaturaldirector.execution.ExecutionPreparationContext;
 import com.sobrenaturaldirector.capability.CandidatePlan;
 import com.sobrenaturaldirector.research.DirectorConsentCommand;
 import com.sobrenaturaldirector.research.SessionConsentRegistry;
+import com.sobrenaturaldirector.shadow.LearnedScorerModelLoader;
+import com.sobrenaturaldirector.shadow.ShadowObservationService;
+import com.sobrenaturaldirector.shadow.JsonlShadowEventWriter;
+import java.io.File;
 
 @Mod(modid = SobrenaturalDirector.MOD_ID, name = SobrenaturalDirector.MOD_NAME,
         version = SobrenaturalDirector.VERSION, acceptedMinecraftVersions = "[1.7.10]")
@@ -41,6 +45,7 @@ public final class SobrenaturalDirector {
     private static DirectorRuntimeCoordinator runtimeCoordinator;
     private static DirectorProviderRegistry providerRegistry;
     private static final SessionConsentRegistry consentRegistry = new SessionConsentRegistry();
+    private static ShadowObservationService shadowService;
     private boolean observationRegistered;
 
     @Mod.EventHandler
@@ -58,10 +63,18 @@ public final class SobrenaturalDirector {
         state = BootstrapState.INITIALIZED;
         observationCoordinator = new ObservationCoordinator(configuration);
         FMLCommonHandler.instance().bus().register(this);
+        if (configuration.isShadowEnabled()) {
+            LearnedScorerModelLoader.LoadedModel loaded = LearnedScorerModelLoader.load(new File(configuration.getShadowModelPath()), configuration.getShadowExpectedModelSha256(), configuration.getShadowExpectedFrozenConfigSha256(), configuration.getShadowExpectedFeatureSchemaSha256());
+            logger.info("Shadow model status={}, shaPrefix={}", loaded.getStatus(), safePrefix(configuration.getShadowExpectedModelSha256()));
+            if (loaded.getStatus() == com.sobrenaturaldirector.shadow.ShadowModelStatus.READY) {
+                shadowService = new ShadowObservationService(loaded.getScorer(), new JsonlShadowEventWriter(new File("shadow-data"), 4L * 1024L * 1024L, 256L * 1024L * 1024L), configuration.getShadowQueueCapacity(), new com.sobrenaturaldirector.research.ResearchCollectionGate() { public boolean canCollect() { return configuration.isShadowCollectExperienceEnabled() && consentRegistry.allActiveAccepted(); } });
+                shadowService.start();
+            }
+        }
         providerRegistry = new DirectorProviderRegistry();
         com.sobrenaturaldirector.provider.DirectorContentProvider customNpcs = ProviderBootstrap.registerAll(providerRegistry, configuration);
         logger.info("Optional providers registered; latest provider status={}, version={}", customNpcs.getStatus(), customNpcs.getDetectedVersion());
-        runtimeCoordinator = new DirectorRuntimeCoordinator(observationCoordinator, configuration, providerRegistry);
+        runtimeCoordinator = new DirectorRuntimeCoordinator(observationCoordinator, configuration, providerRegistry, shadowService);
         if (!observationRegistered) {
             FMLCommonHandler.instance().bus().register(new DirectorRuntimeTickHandler(observationCoordinator,
                     runtimeCoordinator));
@@ -83,6 +96,9 @@ public final class SobrenaturalDirector {
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) { event.registerServerCommand(new DirectorConsentCommand(consentRegistry)); }
 
+    @Mod.EventHandler
+    public void serverStopping(cpw.mods.fml.common.event.FMLServerStoppingEvent event) { if(shadowService!=null)shadowService.stop(); consentRegistry.clear(); }
+
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) { consentRegistry.join(event.player.getCommandSenderName()); event.player.addChatMessage(new net.minecraft.util.ChatComponentText("[Director] Pesquisa Shadow: registre apenas decisões do sistema e outcomes objetivos. Sem consentimento não há coleta. Use /director consent accept ou /director consent decline.")); }
 
@@ -94,6 +110,7 @@ public final class SobrenaturalDirector {
     public static ObservationCoordinator getObservationCoordinator() { return observationCoordinator; }
     public static DirectorRuntimeCoordinator getRuntimeCoordinator() { return runtimeCoordinator; }
     public static DirectorProviderRegistry getProviderRegistry() { return providerRegistry; }
+    private static String safePrefix(String sha) { return sha == null || sha.length() < 8 ? "none" : sha.substring(0, 8); }
     /** High-level production preparation entry point used by validation and future controlled callers. */
     public static PreparedMultiProviderPlan prepareMultiProviderExecution(CandidatePlan plan, ExecutionPreparationContext context, String fingerprint) {
         if (providerRegistry == null) throw new IllegalStateException("provider registry is not initialized");

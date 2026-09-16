@@ -1,0 +1,3 @@
+package com.sobrenaturaldirector.shadow;
+
+public enum ShadowModelStatus { NOT_CONFIGURED, MISSING, INVALID_HASH, INVALID_SCHEMA, INVALID_CONFIG, INVALID_FORMAT, INVALID_WEIGHTS, READY, RUNTIME_ERROR }

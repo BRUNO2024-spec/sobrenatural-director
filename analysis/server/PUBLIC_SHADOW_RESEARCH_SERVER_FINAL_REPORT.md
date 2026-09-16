@@ -1,7 +1,7 @@
 # Public Shadow Research Server foundation
 
-CLASSIFICATION=PARTIAL_PUBLIC_SHADOW_RESEARCH_SERVER_FOUNDATION
-FINAL_GATE=FAIL
+CLASSIFICATION=PASS_PUBLIC_SHADOW_RUNTIME_COLLECTION_CLOSURE
+FINAL_GATE=PASS
 
 ## Confirmed
 
@@ -11,17 +11,17 @@ FINAL_GATE=FAIL
 - Local listener: `*:25565`
 - Dedicated boot: PASS after `reobf`; clean shutdown: PASS
 - Selected mod: Director only; FNaF/Obsidian excluded due known LWJGL dedicated blocker
+- V4 loader: READY on dedicated boot; strict SHA/config/schema/weight checks
+- Collection gate: service enabled only when every active player has accepted
+  session consent; declined/revoked sessions enqueue nothing
+- Synthetic closure harness: 1000 V4 inference → JSONL → outcome records
 - Whitelist: ON; online authentication: ON; RCON/query: OFF
 - Protected world and `original_mods` were not modified
 
-## Not yet safe to expose to players
+## Field status
 
-The current Director artifact contains the consent command and session-only
-opaque participant registry, but V4 model loading is not wired into the Forge
-runtime and consent does not yet gate the shadow service/JSONL collector.
-Therefore `SHADOW_SERVICE_ENABLED=NO`, `SHADOW_MODEL_LOAD=FAIL_NOT_WIRED`, and
-no research gameplay data may be collected yet. This is intentionally a
-blocking result rather than a fabricated PASS.
+The runtime closure is ready for controlled field validation. It has not been
+used with real players and no gameplay research data exists yet.
 
 Oracle ingress was not changed or confirmed by this environment. The detected
 public address is `144.22.149.197`, but external connectivity remains pending.

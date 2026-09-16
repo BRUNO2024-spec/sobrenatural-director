@@ -16,4 +16,7 @@ public class SessionConsentRegistryTest {
         SessionConsentRegistry r=new SessionConsentRegistry(); r.accept("a"); r.revoke("a"); assertEquals(SessionConsentRegistry.State.DECLINED,r.state("a")); assertNull(r.participantId("a"));
         r.join("b"); r.decline("b"); assertNull(r.participantId("b"));
     }
+    @Test public void globalCollectionRequiresEveryActivePlayer() {
+        SessionConsentRegistry r=new SessionConsentRegistry(); r.join("a"); r.join("b"); assertFalse(r.allActiveAccepted()); r.accept("a"); assertFalse(r.allActiveAccepted()); r.accept("b"); assertTrue(r.allActiveAccepted()); r.revoke("a"); assertFalse(r.allActiveAccepted());
+    }
 }

@@ -17,4 +17,6 @@ public final class SessionConsentRegistry {
     public synchronized String participantId(String inMemoryPlayerKey) { return state(inMemoryPlayerKey)==State.ACCEPTED?participantIds.get(inMemoryPlayerKey):null; }
     public synchronized void disconnect(String inMemoryPlayerKey) { states.remove(inMemoryPlayerKey); participantIds.remove(inMemoryPlayerKey); }
     public synchronized void clear() { states.clear(); participantIds.clear(); }
+    /** Conservative policy for global Director decisions: every active player must consent. */
+    public synchronized boolean allActiveAccepted() { if(states.isEmpty()) return false; for(State s:states.values()) if(s!=State.ACCEPTED)return false; return true; }
 }
