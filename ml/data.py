@@ -38,11 +38,13 @@ def fit_transform(rows):
 
 def numeric(row, key):
     src = row["candidateFeatures"] if key == "baseUtility" else row["stateFeatures"]
-    return float(src[key])
+    try: return float(src[key])
+    except (KeyError, TypeError, ValueError) as e: raise ValueError("missing or invalid numeric feature") from e
 
 def categorical(row, key):
     src = row["candidateFeatures"] if key in ("candidateKind", "intent", "safety", "provider") else row["stateFeatures"]
-    return str(src[key])
+    try: return str(src[key])
+    except KeyError as e: raise ValueError("missing categorical feature") from e
 
 def encode(row, prep):
     x = [(numeric(row,k)-prep["means"][k])/prep["stds"][k] for k in prep["numeric"]]
