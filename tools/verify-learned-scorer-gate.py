@@ -7,7 +7,7 @@ values = {}
 for line in path.read_text().splitlines():
     if "=" in line:
         k,v=line.split("=",1); values[k]=v
-missing=[k for k in required if not values.get(k) or values[k] in ("NOT_RUN","FAIL")]
+missing=[k for k in required if not values.get(k) or values[k] == "NOT_RUN" or values[k].startswith("FAIL") or values[k].startswith("PARTIAL")]
 if missing:
     print("gate failed: " + ",".join(missing)); sys.exit(1)
 if values.get("FINAL_GATE") != "PASS": print("gate failed: FINAL_GATE"); sys.exit(1)

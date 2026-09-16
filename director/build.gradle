@@ -54,6 +54,9 @@ afterEvaluate {
 }
 
 jar {
+    // Benchmark/ML tooling is offline and is not part of the production mod artifact.
+    // The classes remain available to source sets and benchmarkFoundation.
+    exclude 'com/sobrenaturaldirector/benchmark/**'
     manifest {
         attributes 'Implementation-Title': 'Sobrenatural Director',
                 'Implementation-Version': project.version
