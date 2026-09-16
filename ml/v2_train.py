@@ -25,23 +25,29 @@ def metrics(model,n,c,y,groups,device):
     mae=sum(abs(x) for x in e)/len(e)
     return {"mse":mse,"rmse":mse**.5,"mae":mae,"pairwise":correct/pairs if pairs else 0.0,"meanRegret":sum(regrets)/len(regrets),"groups":len(groups_out)}
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--cache",required=True); p.add_argument("--out",required=True); p.add_argument("--objective",choices=["pointwise","pairwise","hybrid"],default="pointwise"); p.add_argument("--hidden",type=int,default=64); p.add_argument("--layers",default="32"); p.add_argument("--dropout",type=float,default=0.0); p.add_argument("--activation",default="relu"); p.add_argument("--lr",type=float,default=1e-3); p.add_argument("--wd",type=float,default=0.0); p.add_argument("--seed",type=int,default=7); p.add_argument("--epochs",type=int,default=15); p.add_argument("--run-id",required=True); p.add_argument("--resume",default=""); args=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument("--cache",required=True); p.add_argument("--out",required=True); p.add_argument("--objective",choices=["pointwise","pairwise","hybrid"],default="pointwise"); p.add_argument("--hidden",type=int,default=64); p.add_argument("--layers",default="32"); p.add_argument("--dropout",type=float,default=0.0); p.add_argument("--activation",default="relu"); p.add_argument("--lr",type=float,default=1e-3); p.add_argument("--wd",type=float,default=0.0); p.add_argument("--seed",type=int,default=7); p.add_argument("--epochs",type=int,default=15); p.add_argument("--batch-size",type=int,default=8192); p.add_argument("--run-id",required=True); p.add_argument("--resume",default=""); args=p.parse_args()
     random.seed(args.seed); torch.manual_seed(args.seed); d=torch.load(args.cache,map_location="cpu",weights_only=False); device=torch.device("cuda" if torch.cuda.is_available() else "cpu"); hidden=tuple([args.hidden]+[int(x) for x in args.layers.split(",") if x]) if args.layers else (args.hidden,); model=LearnedScorerV2(d["numeric_dim"],d["vocab_sizes"],hidden=hidden,dropout=args.dropout,activation=args.activation).to(device); opt=torch.optim.Adam(model.parameters(),lr=args.lr,weight_decay=args.wd); best=1e99; best_rank=1e99; step=0; start=time.time(); out=Path(args.out); out.mkdir(parents=True,exist_ok=True)
     if args.resume:
         ck=torch.load(args.resume,map_location=device,weights_only=False); model.load_state_dict(ck["model_state_dict"]); opt.load_state_dict(ck["optimizer_state_dict"]); step=ck["global_step"]
     n,c,y,g=d["train_numeric"],d["train_categorical"],d["train_target"],d["train_groups"]; vn,vc,vy,vg=d["validation_numeric"],d["validation_categorical"],d["validation_target"],d["validation_groups"]; order=torch.randperm(len(y),generator=torch.Generator().manual_seed(args.seed));
+    pairs=[]
+    if args.objective in ("pairwise","hybrid"):
+        by={}
+        for j in range(len(y)): by.setdefault(int(g[j]),[]).append(j)
+        for vals in by.values():
+            winner=max(vals,key=lambda j:float(y[j]))
+            pairs.extend((winner,j) for j in vals if float(y[winner])-float(y[j])>1e-9)
+        pair_order=torch.tensor(pairs,dtype=torch.long) if pairs else torch.empty((0,2),dtype=torch.long)
     history=[]
     for epoch in range(args.epochs):
         model.train(); total=0.0
-        for ix in order.split(2048):
+        for ix in order.split(args.batch_size):
             pred=model(n[ix].to(device),c[ix].to(device)); loss=torch.nn.functional.mse_loss(pred,y[ix].to(device))
             if args.objective in ("pairwise","hybrid"):
-                # Same-state pairs are represented by target ordering only.
-                penalty=torch.tensor(0.0,device=device); by={}
-                for j in ix.tolist(): by.setdefault(int(g[j]),[]).append(j)
-                for vals in by.values():
-                    if len(vals)>1:
-                        pv=pred[[list(ix).index(j) for j in vals]]; tv=y[vals].to(device); diff=tv[:,None]-tv[None,:]; penalty += torch.relu(0.02-(pv[:,None]-pv[None,:])*diff.sign())[diff.abs()>1e-9].mean()
+                pidx=pair_order[(pair_order[:,0].unsqueeze(1)==ix).any(1)] if len(pair_order) else pair_order
+                if len(pidx):
+                    pa=model(n[pidx[:,0]].to(device),c[pidx[:,0]].to(device)); pb=model(n[pidx[:,1]].to(device),c[pidx[:,1]].to(device)); penalty=torch.relu(0.02-(pa-pb)).mean()
+                else: penalty=torch.tensor(0.0,device=device)
                 loss=penalty if args.objective=="pairwise" else loss+0.25*penalty
             opt.zero_grad(); loss.backward(); opt.step(); total+=float(loss.item()); step+=1
         val=metrics(model,vn,vc,vy,vg,device); event={"epoch":epoch+1,"global_step":step,"train_loss":total,"validation":val}; history.append(event); print(json.dumps(event),flush=True)
