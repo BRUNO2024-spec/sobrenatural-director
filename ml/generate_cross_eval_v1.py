@@ -17,7 +17,7 @@ def main():
   sp='TEST' if i<a.states//2 else 'HOLDOUT'; s=state(i,a.seed); chosen=max(((quality(s,c),c) for c in candidates(s)),key=lambda z:(z[0],z[1]))[1]
   for c in candidates(s):
    cf={'candidateKind':c,'intent':{'ambient':'AMBIENT_HINT','continuation':'MYSTERY_PAYOFF','threat':'BOSS_ENCOUNTER','recovery':'RECOVERY','exploration':'LOOT_DISCOVERY','no-action':'NO_ACTION'}[c],'safety':'NON_DESTRUCTIVE' if c!='threat' else 'MAJOR','provider':'threat' if c=='threat' else 'structure' if c in ('ambient','continuation','exploration') else 'none','baseUtility':{'ambient':45,'continuation':60,'threat':70,'recovery':55,'exploration':50,'no-action':35}[c]}
-   write(sp,{'metadata':{'schemaVersion':SCHEMA,'stateId':'CROSS-EVAL-V1-S-%07d'%i,'candidateId':'%s-%07d'%(c,i),'episodeId':'CROSS-EVAL-V1-E-%05d'%(i//10),'step':i%10,'split':sp,'trainingAllowed':False},'stateFeatures':s,'candidateFeatures':cf,'supervision':{'teacherQuality':quality(s,c),'teacherChosen':c==chosen,'targetProvenance':'DETERMINISTIC_BENCHMARK_TEACHER'}})
+   write(sp,{'metadata':{'schemaVersion':SCHEMA,'stateId':'CROSS-EVAL-V1-S-%07d'%i,'candidateId':'CROSS-EVAL-V1-%s-%07d'%(c,i),'episodeId':'CROSS-EVAL-V1-E-%05d'%(i//10),'step':i%10,'split':sp,'trainingAllowed':False},'stateFeatures':s,'candidateFeatures':cf,'supervision':{'teacherQuality':quality(s,c),'teacherChosen':c==chosen,'targetProvenance':'DETERMINISTIC_BENCHMARK_TEACHER'}})
  for _,w in writers.values():w.close()
  shards=[];hashes=[]
  for f in sorted(root.glob('*/part-*.jsonl')):
