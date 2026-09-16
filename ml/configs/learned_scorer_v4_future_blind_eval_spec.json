@@ -8,7 +8,7 @@
   "episodeIdPrefix": "V4-BLIND-E-",
   "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V4",
   "generateOnlyAfterModelFreeze": true,
-  "generationSpecBaseSha256": "24162d517ffd4773bb59654894c9b80024ffb5f2c172a38c980e95ea65fb1d02",
+  "generationSpecBaseSha256": "f32d16e2a4c9dfc5d7df2217fcd4d26e552c71dd4e84d5871ae006bd73493de3",
   "generator": "ml/generate_experience_v4.py",
   "generatorVersion": "director-experience-v4-generator-4",
   "globalSeed": 515151,
