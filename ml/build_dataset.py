@@ -16,6 +16,6 @@ def main():
     (out/"manifest.json").write_text(json.dumps(manifest,sort_keys=True,indent=2)+"\n",encoding="utf-8")
     with (out/"rows.jsonl").open("w",encoding="utf-8") as f:
         for r in allrows:
-            x,c,y=encode(r,prep); f.write(json.dumps({"scenarioId":r["scenarioId"],"split":r["split"],"numeric":x,"categorical":c,"target":y},sort_keys=True)+"\n")
+            x,c,y=encode(r,prep); f.write(json.dumps({"scenarioId":r["scenarioId"],"candidateId":r["candidateId"],"chosen":r["target"]["chosen"],"split":r["split"],"numeric":x,"categorical":c,"target":y},sort_keys=True)+"\n")
     print(json.dumps({"rows":len(allrows),"train":len(train),"validation":len(val),"dimensions":len(prep["numeric"]),"categoricalVocab":{k:len(v) for k,v in prep["vocab"].items()}}))
 if __name__=="__main__": main()
