@@ -1,6 +1,9 @@
 """TRAIN-only streaming preprocessing for V3 consumption smoke/future training."""
 import math
-from v3_dataset import iter_rows
+try:
+    from .v3_dataset import iter_rows
+except ImportError:
+    from v3_dataset import iter_rows
 NUMERIC=["tension","pressure","fatigue","recoveryNeed","healthRatio","combatPower","isolation","underground","observingSite","safetyKnown","eventConcurrency","memoryPressure","cooldownActive","threadActive","threadAgeBucket","recentHigh","repetitionCount","episodeStep","baseUtility"]
 CATEGORICAL=["family","environment","providerMode","narrativeState","candidateKind","intent","safety","provider"]
 def value(r,k):
