@@ -1,0 +1,20 @@
+{
+  "criteriaVersion": "V4_SHADOW_READINESS_CRITERIA_V1",
+  "frozenBeforeBlind": true,
+  "syntheticEvidenceOnly": true,
+  "requirements": {
+    "freshBlindIntegrity": "PASS",
+    "pairedImprovementAgainstV4Small": "reported_with_bootstrap_ci",
+    "seedStability": "report_mean_std_min_max_for_7_17_27",
+    "worstSlice": "no_unreviewed_severe_regression",
+    "noAction": "reported",
+    "temporal": "reported",
+    "hardBoundary": "reported",
+    "cpuLatency": "within_10x_historical_v3_typical_p50_or_review",
+    "javaParity": "PASS",
+    "safetySeparation": "PASS",
+    "realGameplayEvidence": "not_required_for_offline_gate"
+  },
+  "decision": "PASS_ONLY_IF_ALL_REQUIRED_ITEMS_ARE_SATISFIED; otherwise INSUFFICIENT_EVIDENCE",
+  "shadowModeEnabledByThisSpec": false
+}
