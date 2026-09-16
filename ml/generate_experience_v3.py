@@ -52,7 +52,7 @@ def main():
             write(split,row)
     for _,w in writers.values(): w.close()
     schema={"schemaVersion":SCHEMA,"metadataExcludedFromInput":["stateId","candidateId","episodeId","step","split","trainingAllowed"],"stateFeatures":sorted(state(0,args.seed).keys()),"candidateFeatures":["candidateKind","intent","safety","provider","baseUtility"],"supervision":["teacherQuality","teacherChosen"]}
-    (root/"schema.json").write_text(json.dumps(schema,sort_keys=True,indent=2)+"\n"); spec={"runId":args.run_id,"seed":args.seed,"states":args.states,"generatorVersion":VERSION,"targetProvenance":"DETERMINISTIC_BENCHMARK_TEACHER"}; (root/"generation-config.json").write_text(json.dumps(spec,sort_keys=True,indent=2)+"\n")
+    (root/"schema.json").write_text(json.dumps(schema,sort_keys=True,indent=2)+"\n"); config_path=Path("ml/configs/director_experience_v3_generation.json"); spec=json.loads(config_path.read_text()) if config_path.exists() else {"runId":args.run_id,"seed":args.seed,"states":args.states,"generatorVersion":VERSION,"targetProvenance":"DETERMINISTIC_BENCHMARK_TEACHER"}; (root/"generation-config.json").write_text(json.dumps(spec,sort_keys=True,indent=2)+"\n")
     shards=[]; hash_lines=[]
     for path in sorted(root.glob("*/part-*.jsonl")):
         data=path.read_bytes(); split=path.parent.name; item={"path":str(path.relative_to(root)),"split":split,"rows":sum(1 for _ in data.splitlines()),"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest()}; shards.append(item); hash_lines.append(item["sha256"]+"  "+item["path"])
