@@ -7,5 +7,6 @@ class LearnedScorerV1(nn.Module):
         self.embeddings = nn.ModuleList([nn.Embedding(n, embedding_dim) for n in vocab_sizes])
         self.net = nn.Sequential(nn.Linear(numeric_dim + embedding_dim*len(vocab_sizes), hidden), nn.ReLU(), nn.Dropout(dropout), nn.Linear(hidden, 1))
     def forward(self, numeric, categorical):
+        if numeric.size(0) == 0: raise ValueError("cannot score an empty candidate set")
         parts = [e(categorical[:, i]) for i,e in enumerate(self.embeddings)]
         return self.net(torch.cat([numeric] + parts, dim=1)).squeeze(1)
