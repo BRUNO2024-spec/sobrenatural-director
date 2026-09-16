@@ -14,11 +14,16 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import org.apache.logging.log4j.Logger;
 import com.sobrenaturaldirector.execution.PreparedExecutionPlanFactory;
 import com.sobrenaturaldirector.execution.PreparedMultiProviderPlan;
 import com.sobrenaturaldirector.execution.ExecutionPreparationContext;
 import com.sobrenaturaldirector.capability.CandidatePlan;
+import com.sobrenaturaldirector.research.DirectorConsentCommand;
+import com.sobrenaturaldirector.research.SessionConsentRegistry;
 
 @Mod(modid = SobrenaturalDirector.MOD_ID, name = SobrenaturalDirector.MOD_NAME,
         version = SobrenaturalDirector.VERSION, acceptedMinecraftVersions = "[1.7.10]")
@@ -35,6 +40,7 @@ public final class SobrenaturalDirector {
     private static ObservationCoordinator observationCoordinator;
     private static DirectorRuntimeCoordinator runtimeCoordinator;
     private static DirectorProviderRegistry providerRegistry;
+    private static final SessionConsentRegistry consentRegistry = new SessionConsentRegistry();
     private boolean observationRegistered;
 
     @Mod.EventHandler
@@ -51,6 +57,7 @@ public final class SobrenaturalDirector {
     public void init(FMLInitializationEvent event) {
         state = BootstrapState.INITIALIZED;
         observationCoordinator = new ObservationCoordinator(configuration);
+        FMLCommonHandler.instance().bus().register(this);
         providerRegistry = new DirectorProviderRegistry();
         com.sobrenaturaldirector.provider.DirectorContentProvider customNpcs = ProviderBootstrap.registerAll(providerRegistry, configuration);
         logger.info("Optional providers registered; latest provider status={}, version={}", customNpcs.getStatus(), customNpcs.getDetectedVersion());
@@ -72,6 +79,15 @@ public final class SobrenaturalDirector {
 
     @Mod.EventHandler
     public void serverStarted(FMLServerStartedEvent event) { ProviderBootstrap.onServerStarted(providerRegistry); }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) { event.registerServerCommand(new DirectorConsentCommand(consentRegistry)); }
+
+    @SubscribeEvent
+    public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) { consentRegistry.join(event.player.getCommandSenderName()); event.player.addChatMessage(new net.minecraft.util.ChatComponentText("[Director] Pesquisa Shadow: registre apenas decisões do sistema e outcomes objetivos. Sem consentimento não há coleta. Use /director consent accept ou /director consent decline.")); }
+
+    @SubscribeEvent
+    public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) { consentRegistry.disconnect(event.player.getCommandSenderName()); }
 
     public static BootstrapState getBootstrapState() { return state; }
     public static FoundationConfig getConfiguration() { return configuration; }

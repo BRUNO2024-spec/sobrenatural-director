@@ -1,0 +1,21 @@
+{
+  "serverRoot": "/home/desktop/Documentos/director-shadow-server",
+  "forgeVersion": "10.13.4.1614",
+  "minecraftVersion": "1.7.10",
+  "java": "8",
+  "port": 25565,
+  "serverMods": [
+    {
+      "file": "mods/SobrenaturalDirector-0.12.0-alpha.jar",
+      "sha256": "85dfb3e9af1bbb8393812badde2ebea546f0e4347716ca6bd7ff6969dd5a9ec1"
+    }
+  ],
+  "model": {
+    "file": "models/learned-scorer-v4-model.json",
+    "sha256": "dd4ccebad2b7f94db74a27493c2418e7abdea5ee66509d39e2a3982538592af9",
+    "loadStatus": "NOT_WIRED_TO_RUNTIME"
+  },
+  "authentication": "online-mode=true",
+  "researchCollection": "DISABLED_PENDING_V4_LOADER_AND_CONSENT_WIRING",
+  "protectedWorldCopied": false
+}
