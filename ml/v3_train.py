@@ -17,7 +17,7 @@ def main():
  for epoch in range(a.epochs):
   m.train(); order=torch.randperm(len(po),generator=torch.Generator().manual_seed(a.seed+epoch)); total=0
   for ix in po[order].split(32768):
-   q=m(n[ix[:,0]].to(device),c[ix[:,0]].to(device));r=m(n[ix[:,1]].to(device),c[ix[:,1]].to(device));loss=torch.relu(0.02-q+r).mean();o.zero_grad();loss.backward();o.step();total+=float(loss); 
+   q=m(n[ix[:,0]].to(device),c[ix[:,0]].to(device));r=m(n[ix[:,1]].to(device),c[ix[:,1]].to(device));loss=torch.relu(0.02-q+r).mean();o.zero_grad();loss.backward();o.step();total+=float(loss)
   m.eval();
   with torch.no_grad(): pred=m(vn.to(device),vc.to(device)).cpu()
   mm=scores(pred,vy,vg);hist.append({'epoch':epoch+1,'validation':mm,'train_loss':total});print(json.dumps(hist[-1]),flush=True)
