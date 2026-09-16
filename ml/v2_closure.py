@@ -5,6 +5,16 @@ import torch
 from v2_model import LearnedScorerV2
 from v2_evaluate import scores
 from v3_dataset import iter_rows
+def fast_slice(pred,target,groups):
+    vals={}
+    for i,g in enumerate(groups.tolist()): vals.setdefault(g,[]).append((float(pred[i]),float(target[i])))
+    regret=top=correct=total=0
+    for z in vals.values():
+        best=max(x[1] for x in z); chosen=max(z,key=lambda x:x[0]); regret+=best-chosen[1]; top+=chosen[1]==best
+        for aa in z:
+            for bb in z:
+                if aa[1]!=bb[1]: total+=1; correct+=(aa[0]>bb[0])==(aa[1]>bb[1])
+    return {'pairwise':correct/total if total else 0.0,'top1':top/len(vals) if vals else 0.0,'ndcg':None,'mean_regret':regret/len(vals) if vals else 0.0,'groups':len(vals)}
 
 def main():
     p=argparse.ArgumentParser(); p.add_argument('--cache',required=True); p.add_argument('--checkpoint',required=True); p.add_argument('--dataset',required=True); p.add_argument('--out',required=True); a=p.parse_args()
@@ -22,7 +32,7 @@ def main():
         if split != 'validation':
             for field in ('family','environment','providerMode','narrativeState','candidateKind','episode'):
                 for value in sorted(set(x[field] for x in labels),key=str):
-                    ix=[i for i,x in enumerate(labels) if x[field]==value]; slices[field+'='+str(value)]={'size':len(ix),'metrics':scores(pred[ix],y[ix],g[ix])}
+                    ix=[i for i,x in enumerate(labels) if x[field]==value]; slices[field+'='+str(value)]={'size':len(ix),'metrics':fast_slice(pred[ix],y[ix],g[ix])}
         out[split+'_slices']=slices
         # NO_ACTION is evaluated at state level; false positives mean selecting it
         # when the teacher best candidate is not NO_ACTION.
