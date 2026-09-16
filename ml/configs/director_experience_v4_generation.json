@@ -13,7 +13,7 @@
   "datasetVersion": "DIRECTOR_EXPERIENCE_DATASET_V4",
   "dedupPolicy": "exact canonical input fingerprints within and across splits",
   "featureSchema": "DIRECTOR_EXPERIENCE_FEATURES_V4",
-  "generatorVersion": "director-experience-v4-generator-3",
+  "generatorVersion": "director-experience-v4-generator-4",
   "globalSeedNamespace": "DIRECTOR_EXPERIENCE_V4_SEED_909090",
   "historicalOverlapPolicy": "zero overlap against all V3 and consumed V3 blind inputs/candidates",
   "requestedStateGroups": 120000,
@@ -23,7 +23,7 @@
     "stepsPerEpisode": 10
   },
   "shardRows": 10000,
-  "sourceCommit": "5673fd5019288a0e454658a1757e4a4301bd96dd",
+  "sourceCommit": "61ad83a4f51071c1a92ea9dd7848da0285102791",
   "splitPolicy": {
     "grouping": "state_or_episode",
     "train": 0.8,
