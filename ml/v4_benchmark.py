@@ -15,7 +15,7 @@ def main():
   ts.sort();return {'p50':ts[49],'p95':ts[94],'p99':ts[99]}
  out={'parameterCount':sum(x.numel() for x in m.parameters()),'cpu_single':measure(1),'cpu_typical':measure(min(6,len(x))),'cpu_large':measure(len(x))}
  if torch.cuda.is_available():
-  g=m.cuda();gx=x.cuda();gc=c.cuda();
+  g=LearnedScorerV2(d['numeric_dim'],d['vocab_sizes'],hidden=tuple(ck['config']['hidden'])).cuda();g.load_state_dict(ck['model_state_dict']);g.eval();gx=x.cuda();gc=c.cuda();
   for _ in range(20):g(gx,gc)
   torch.cuda.synchronize(); vals=[]
   for _ in range(100):
