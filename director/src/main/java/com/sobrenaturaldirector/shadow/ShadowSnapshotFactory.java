@@ -9,9 +9,12 @@ import com.sobrenaturaldirector.decision.model.DecisionContext;
 public final class ShadowSnapshotFactory {
     private ShadowSnapshotFactory() { }
     public static ShadowDecisionSnapshot create(DecisionContext context,List<CandidateAction> candidates,String selected,long tick,String fingerprint) {
+        return create(context,candidates,selected,tick,fingerprint,null);
+    }
+    public static ShadowDecisionSnapshot create(DecisionContext context,List<CandidateAction> candidates,String selected,long tick,String fingerprint,ShadowDecisionDiagnostics diagnostics) {
         List<ShadowCandidate> values=new ArrayList<ShadowCandidate>();
         for(CandidateAction c:candidates) values.add(new ShadowCandidate(c.getCandidateId(),c.getIntent().name(),numeric(context,c),new int[8]));
-        return new ShadowDecisionSnapshot("decision:"+tick+":"+fingerprint,"DIRECTOR_EXPERIENCE_FEATURES_V4",tick,fingerprint,selected,values);
+        return new ShadowDecisionSnapshot("decision:"+tick+":"+fingerprint,"DIRECTOR_EXPERIENCE_FEATURES_V4",tick,fingerprint,selected,values,diagnostics);
     }
     private static double[] numeric(DecisionContext c,CandidateAction a){return new double[]{c.getTension(),c.getPressure(),c.getFatigue(),c.getRecoveryNeed(),c.getHealthRatio(),c.getCombatPower(),c.getIsolation(),c.isUnderground()?1:0,c.isObservingSite()?1:0,c.isSafetyKnown()?1:0,c.getEventConcurrency(),0,c.getCooldownUntil().isEmpty()?0:1,0,0,0,0,0,a.getBaseUtility()/100.0};}
 }

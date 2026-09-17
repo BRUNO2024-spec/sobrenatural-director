@@ -24,3 +24,8 @@ the exact upstream reason remains `UNKNOWN` beyond the provider evidence.
 
 No thresholds, heuristics, providers, safety rules, autonomy settings, model,
 or weights were changed.
+
+Future enhanced V2 sessions now persist the primary reason code and candidate
+generation summary at decision time. The historical `cs_YEG6Z4FUQ6YX` reason
+therefore remains a limited after-the-fact inference and is not retroactively
+rewritten.
