@@ -19,7 +19,7 @@ public final class ShadowObservationService {
     public synchronized void stop(){enabled=false;stopping=true;if(worker!=null){worker.interrupt();try{worker.join(2000L);}catch(InterruptedException e){Thread.currentThread().interrupt();}}worker=null;queue.clear();}
     public boolean isEnabled(){return enabled;}
     public synchronized void startIfReady(){start();}
-    public boolean submit(ShadowDecisionSnapshot snapshot){if(snapshot==null||!enabled||stopping||collectionGate!=null&&!collectionGate.canCollect())return false;if(!queue.offer(snapshot)){metrics.dropped();return false;}metrics.submitted();metrics.observeQueue(queue.size());return true;}
+    public boolean submit(ShadowDecisionSnapshot snapshot){if(snapshot==null||!enabled||stopping||collectionGate!=null&&!collectionGate.canCollect())return false;if(!queue.offer(snapshot)){metrics.dropped();return false;}metrics.submitted();metrics.observeQueue(Math.max(1,queue.size()));return true;}
     public int getQueueDepth(){return queue.size();} public ShadowObservationMetrics getMetrics(){return metrics;}
     private void loop(){long processed=0;while(!stopping){try{ShadowDecisionSnapshot s=queue.poll(100,TimeUnit.MILLISECONDS);if(s==null)continue;metrics.request();ShadowScoreResult r=scorer.score(s);if(r==null)throw new IllegalStateException("null shadow result");sink.accept(r);metrics.scored();if(++processed%100==0&&sink instanceof JsonlShadowV2EventWriter)((JsonlShadowV2EventWriter)sink).healthSnapshot(metrics,s.getTick(),queue.size());}catch(InterruptedException e){if(stopping)break;}catch(RuntimeException e){metrics.error();}}try{sink.close();}catch(RuntimeException ignored){metrics.error();}}
 }
