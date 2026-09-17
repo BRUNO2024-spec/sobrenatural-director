@@ -6,7 +6,8 @@
 - Forge `10.13.4.1614`.
 - **Mods adicionais obrigatórios: nenhum** (`CLIENT_REQUIRED_MOD_COUNT=0`).
 - `SobrenaturalDirector-0.12.0-alpha.jar` é server-only nesta instalação e
-  não deve ser copiado para o cliente.
+  não deve ser copiado para o cliente. O servidor aceita a ausência do mod
+  por `acceptableRemoteVersions="*"`.
 
 ## Arquivos encontrados na VPS
 

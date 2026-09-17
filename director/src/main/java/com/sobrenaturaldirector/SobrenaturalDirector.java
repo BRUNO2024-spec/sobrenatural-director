@@ -30,7 +30,8 @@ import com.sobrenaturaldirector.shadow.JsonlShadowEventWriter;
 import java.io.File;
 
 @Mod(modid = SobrenaturalDirector.MOD_ID, name = SobrenaturalDirector.MOD_NAME,
-        version = SobrenaturalDirector.VERSION, acceptedMinecraftVersions = "[1.7.10]")
+        version = SobrenaturalDirector.VERSION, acceptedMinecraftVersions = "[1.7.10]",
+        acceptableRemoteVersions = "*")
 public final class SobrenaturalDirector {
     public static final String MOD_ID = "sobrenaturaldirector";
     public static final String MOD_NAME = "Sobrenatural Director";

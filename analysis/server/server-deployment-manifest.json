@@ -7,7 +7,7 @@
   "serverMods": [
     {
       "file": "mods/SobrenaturalDirector-0.12.0-alpha.jar",
-      "sha256": "8528b1edf959b9501bbea5cc4878ce581f350299179de973f201e04963ca8451"
+      "sha256": "e1799f67b09a5bfbf45df3203dc74d473adc85e1010d37be90d8138e0cb459bf"
     }
   ],
   "model": {
@@ -16,6 +16,6 @@
     "loadStatus": "READY_ON_DEDICATED_BOOT"
   },
   "authentication": "online-mode=false; username spoofing possible",
-  "researchCollection": "DISABLED_PENDING_V4_LOADER_AND_CONSENT_WIRING",
+  "researchCollection": "CONSENT_GATED_SHADOW_READY",
   "protectedWorldCopied": false
 }
