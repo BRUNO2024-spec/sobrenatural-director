@@ -26,7 +26,8 @@ import com.sobrenaturaldirector.research.DirectorConsentCommand;
 import com.sobrenaturaldirector.research.SessionConsentRegistry;
 import com.sobrenaturaldirector.shadow.LearnedScorerModelLoader;
 import com.sobrenaturaldirector.shadow.ShadowObservationService;
-import com.sobrenaturaldirector.shadow.JsonlShadowEventWriter;
+import com.sobrenaturaldirector.shadow.JsonlShadowV2EventWriter;
+import com.sobrenaturaldirector.shadow.ShadowRuntimeIdentity;
 import java.io.File;
 
 @Mod(modid = SobrenaturalDirector.MOD_ID, name = SobrenaturalDirector.MOD_NAME,
@@ -47,6 +48,8 @@ public final class SobrenaturalDirector {
     private static DirectorProviderRegistry providerRegistry;
     private static final SessionConsentRegistry consentRegistry = new SessionConsentRegistry();
     private static ShadowObservationService shadowService;
+    private static JsonlShadowV2EventWriter v2Writer;
+    private static boolean shutdownHookRegistered;
     private boolean observationRegistered;
 
     @Mod.EventHandler
@@ -68,7 +71,18 @@ public final class SobrenaturalDirector {
             LearnedScorerModelLoader.LoadedModel loaded = LearnedScorerModelLoader.load(new File(configuration.getShadowModelPath()), configuration.getShadowExpectedModelSha256(), configuration.getShadowExpectedFrozenConfigSha256(), configuration.getShadowExpectedFeatureSchemaSha256());
             logger.info("Shadow model status={}, shaPrefix={}", loaded.getStatus(), safePrefix(configuration.getShadowExpectedModelSha256()));
             if (loaded.getStatus() == com.sobrenaturaldirector.shadow.ShadowModelStatus.READY) {
-                shadowService = new ShadowObservationService(loaded.getScorer(), new JsonlShadowEventWriter(new File("shadow-data"), 4L * 1024L * 1024L, 256L * 1024L * 1024L), configuration.getShadowQueueCapacity(), new com.sobrenaturaldirector.research.ResearchCollectionGate() { public boolean canCollect() { return configuration.isShadowCollectExperienceEnabled() && consentRegistry.allActiveAccepted(); } });
+                v2Writer = new JsonlShadowV2EventWriter(new File("shadow-data"), ShadowRuntimeIdentity.capture(configuration, SobrenaturalDirector.class));
+                consentRegistry.setListener(new com.sobrenaturaldirector.research.ConsentLifecycleListener() {
+                    public void accepted(String session,String participant,long tick){v2Writer.participantStart(session,participant,tick);}
+                    public void revoked(String session,String participant,long tick){v2Writer.participantEnd(session,participant,"CONSENT_REVOKED",tick);}
+                    public void disconnected(String session,String participant,long tick){v2Writer.participantEnd(session,participant,"DISCONNECT",tick);}
+                    public void ended(String session,String participant,String reason,long tick){v2Writer.participantEnd(session,participant,reason,tick);}
+                });
+                if (!shutdownHookRegistered) {
+                    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() { public void run() { consentRegistry.closeAll("SERVER_SHUTDOWN"); if (v2Writer != null) v2Writer.close(); } }, "director-shadow-v2-shutdown"));
+                    shutdownHookRegistered = true;
+                }
+                shadowService = new ShadowObservationService(loaded.getScorer(), v2Writer, configuration.getShadowQueueCapacity(), new com.sobrenaturaldirector.research.ResearchCollectionGate() { public boolean canCollect() { return configuration.isShadowCollectExperienceEnabled() && consentRegistry.allActiveAccepted(); } });
                 shadowService.start();
             }
         }
@@ -98,13 +112,13 @@ public final class SobrenaturalDirector {
     public void serverStarting(FMLServerStartingEvent event) { event.registerServerCommand(new DirectorConsentCommand(consentRegistry)); }
 
     @Mod.EventHandler
-    public void serverStopping(cpw.mods.fml.common.event.FMLServerStoppingEvent event) { if(shadowService!=null)shadowService.stop(); consentRegistry.clear(); }
+    public void serverStopping(cpw.mods.fml.common.event.FMLServerStoppingEvent event) { consentRegistry.closeAll("SERVER_SHUTDOWN"); if(shadowService!=null)shadowService.stop(); else if(v2Writer!=null)v2Writer.close(); consentRegistry.clear(); }
 
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) { consentRegistry.join(event.player.getCommandSenderName()); event.player.addChatMessage(new net.minecraft.util.ChatComponentText("[Director] Pesquisa Shadow: registre apenas decisões do sistema e outcomes objetivos. Sem consentimento não há coleta. Use /director consent accept ou /director consent decline.")); }
 
     @SubscribeEvent
-    public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) { consentRegistry.disconnect(event.player.getCommandSenderName()); }
+    public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) { consentRegistry.disconnect(event.player.getCommandSenderName(),event.player.worldObj.getTotalWorldTime()); }
 
     public static BootstrapState getBootstrapState() { return state; }
     public static FoundationConfig getConfiguration() { return configuration; }
