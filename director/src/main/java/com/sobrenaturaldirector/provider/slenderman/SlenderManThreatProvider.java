@@ -28,6 +28,12 @@ import com.sobrenaturaldirector.threat.PersistentNarrativeThreat;
 import com.sobrenaturaldirector.threat.ThreatPhysicalBinding;
 import com.sobrenaturaldirector.threat.ThreatPhysicalObservation;
 import com.sobrenaturaldirector.runtime.DirectorRuntimeMode;
+import com.sobrenaturaldirector.control.ControlExecutionContext;
+import com.sobrenaturaldirector.control.ControlRequest;
+import com.sobrenaturaldirector.control.ControlResult;
+import com.sobrenaturaldirector.control.ControlResultStatus;
+import com.sobrenaturaldirector.control.EntityControlRequest;
+import com.sobrenaturaldirector.control.EntityLifecycleOperation;
 import org.apache.logging.log4j.Level;
 
 /** Optional provider exposing exactly one validated SlenderMan threat definition. */
@@ -56,6 +62,7 @@ public final class SlenderManThreatProvider implements ThreatProvider {
         this.faultInjection = faultInjection;
         Map<String, ProviderCapabilityState> values = new LinkedHashMap<String, ProviderCapabilityState>();
         values.put(CapabilityVocabulary.THREAT_SOURCE.getValue(), ProviderCapabilityState.MUTATION_VALIDATED);
+        values.put(CapabilityVocabulary.ENTITY_LIFECYCLE_CONTROL.getValue(), ProviderCapabilityState.MUTATION_VALIDATED);
         capabilities = Collections.unmodifiableMap(values);
         initialize();
     }
@@ -125,6 +132,19 @@ public final class SlenderManThreatProvider implements ThreatProvider {
         return result(ThreatExecutionResult.Status.CLEANUP_EXECUTED, request, entry.getEntityUuid());
     }
 
+    @Override public ControlResult executeControl(ControlRequest raw, ControlExecutionContext context, long tick) {
+        if (!(raw instanceof EntityControlRequest) || context == null) return new ControlResult(ControlResultStatus.INVALID_REQUEST, "SlenderMan lifecycle requires server context");
+        EntityControlRequest request = (EntityControlRequest) raw;
+        if (request.getPosition() == null) return new ControlResult(ControlResultStatus.INVALID_REQUEST, "threat position is required");
+        if (!PROVIDER_ID.equals(request.getProvider()) || request.getTarget().getOwnership() != com.sobrenaturaldirector.control.EntityOwnership.DIRECTOR_SPAWNED) return new ControlResult(ControlResultStatus.SAFETY_REJECTED, "Director ownership required");
+        ThreatExecutionRequest legacy = new ThreatExecutionRequest(request.getMutationId(), "CONTROLLED_VALIDATION", PROVIDER_ID, DEFINITION_ID, ThreatOwnership.ORIGIN_VALUE, SUPPORTED_VERSION, DirectorRuntimeMode.CONTROLLED_EXECUTION, context.getWorld(), request.getPosition().getDimension().getDimensionId(), request.getPosition().getX(), request.getPosition().getY(), request.getPosition().getZ(), true);
+        ThreatExecutionResult result = request.getOperation() == EntityLifecycleOperation.SPAWN ? execute(legacy, context.getSaved()) : cleanup(legacy, context.getSaved());
+        ThreatExecutionResult.Status status = result.getStatus();
+        if (status == ThreatExecutionResult.Status.CREATED || status == ThreatExecutionResult.Status.RECONCILED_EXISTING || status == ThreatExecutionResult.Status.CLEANUP_EXECUTED || status == ThreatExecutionResult.Status.ALREADY_EXECUTED) return new ControlResult(ControlResultStatus.APPLIED, status.name());
+        if (status == ThreatExecutionResult.Status.REJECTED_POLICY || status == ThreatExecutionResult.Status.REJECTED_DISABLED || status == ThreatExecutionResult.Status.REJECTED_NO_SAFE_SITE) return new ControlResult(ControlResultStatus.SAFETY_REJECTED, status.name());
+        return new ControlResult(ControlResultStatus.FAILED, status.name());
+    }
+
     @Override public ThreatPhysicalObservation inspectBinding(PersistentNarrativeThreat threat, ThreatPhysicalBinding binding, WorldServer world) {
         if (!isAvailable() || bridge == null) return ThreatPhysicalObservation.PROVIDER_UNAVAILABLE;
         if (world == null) return ThreatPhysicalObservation.WORLD_UNAVAILABLE;
@@ -141,8 +161,8 @@ public final class SlenderManThreatProvider implements ThreatProvider {
     private boolean allowed(ThreatExecutionRequest request, DirectorWorldSavedData saved) {
         return request != null && saved != null && executionEnabled && request.isAuthorized() && request.getMode() == DirectorRuntimeMode.CONTROLLED_EXECUTION
                 && PROVIDER_ID.equals(request.getProviderId()) && DEFINITION_ID.equals(request.getDefinitionId()) && ThreatOwnership.ORIGIN_VALUE.equals(request.getOrigin())
-                && SUPPORTED_VERSION.equals(request.getExpectedVersion()) && request.getWorld() != null && request.getDimension() == 0
-                && request.getWorld().provider.dimensionId == 0 && status == ProviderStatus.AVAILABLE_SUPPORTED;
+                && SUPPORTED_VERSION.equals(request.getExpectedVersion()) && request.getWorld() != null
+                && request.getDimension() == request.getWorld().provider.dimensionId && status == ProviderStatus.AVAILABLE_SUPPORTED;
     }
     private boolean isServerThread() { MinecraftServer server = MinecraftServer.getServer(); return server != null && Thread.currentThread().getName().equals("Server thread"); }
     private ThreatExecutionResult rejected(ThreatExecutionRequest request, ThreatExecutionResult.Status status) { return result(status, request, null); }
@@ -156,5 +176,5 @@ public final class SlenderManThreatProvider implements ThreatProvider {
     public ProviderStatus getStatus() { return status; }
     public Map<String, ProviderCapabilityState> getCapabilities() { return capabilities; }
     public ThreatDefinition getThreatDefinition() { return definition; }
-    public java.util.Set<CapabilityPolicyBinding> getPolicyBindings() { return Collections.singleton(new CapabilityPolicyBinding(CapabilityVocabulary.THREAT_SOURCE, "slenderman.controlled_threat_boundary")); }
+    public java.util.Set<CapabilityPolicyBinding> getPolicyBindings() { java.util.Set<CapabilityPolicyBinding> values = new java.util.HashSet<CapabilityPolicyBinding>(); values.add(new CapabilityPolicyBinding(CapabilityVocabulary.THREAT_SOURCE, "slenderman.controlled_threat_boundary")); values.add(new CapabilityPolicyBinding(CapabilityVocabulary.ENTITY_LIFECYCLE_CONTROL, "slenderman.director_owned_lifecycle")); return Collections.unmodifiableSet(values); }
 }

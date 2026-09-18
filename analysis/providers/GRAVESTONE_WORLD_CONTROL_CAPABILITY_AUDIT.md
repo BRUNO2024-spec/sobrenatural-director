@@ -8,5 +8,6 @@ Fresh-world backup-data warnings are upstream non-fatal warnings.
 |---|---|
 | structure/block source | SUPPORTED |
 | allowlisted mutation planning and rollback journal | SUPPORTED by existing foundation |
-| arbitrary structure composition, player-area mutation, item inventory control | DEFERRED_TO_PHASE3 |
-| stale-safe restoration | FOUNDATION_ONLY; concrete proof deferred |
+| allowlisted structure composition and block mutation | SUPPORTED | concrete executor, journal and rollback path |
+| player-area mutation, item inventory control | UNSUPPORTED_IN_PHASE3 | ownership policy rejects it |
+| stale-safe restoration | SUPPORTED | dimension and observed-state checks reject stale rollback |

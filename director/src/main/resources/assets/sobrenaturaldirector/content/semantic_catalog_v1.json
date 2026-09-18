@@ -748,6 +748,23 @@
       ]
     },
     {
+      "key": "slenderman:threat",
+      "provider": "slenderman",
+      "kind": "ENTITY",
+      "capabilities": [
+        "director:threat_source",
+        "director:entity_lifecycle_control"
+      ],
+      "evidence": "CONFIRMED",
+      "provenance": "RUNTIME_REGISTRY",
+      "registryResolvable": false,
+      "adapterRequired": true,
+      "execution": "ELIGIBLE_FOR_FUTURE_EVALUATION",
+      "sources": [
+        "PHASE_3_SLENDERMAN_RUNTIME_PROVIDER"
+      ]
+    },
+    {
       "key": "residentevilspawnaddon:zombiedog",
       "provider": "residentevilspawnaddon",
       "kind": "ENTITY",

@@ -21,6 +21,13 @@ import com.sobrenaturaldirector.provider.ProviderMutationResult;
 import com.sobrenaturaldirector.runtime.DirectorRuntimeMode;
 import com.sobrenaturaldirector.capability.CapabilityPolicyBinding;
 import com.sobrenaturaldirector.capability.CapabilityVocabulary;
+import com.sobrenaturaldirector.control.ControlExecutionContext;
+import com.sobrenaturaldirector.control.ControlRequest;
+import com.sobrenaturaldirector.control.ControlResult;
+import com.sobrenaturaldirector.control.ControlResultStatus;
+import com.sobrenaturaldirector.control.EntityControlRequest;
+import com.sobrenaturaldirector.control.EntityLifecycleOperation;
+import com.sobrenaturaldirector.mutation.runtime.MutationOperation;
 
 /** Optional production provider facade. CustomNPCs classes are resolved only by the lazy bridge. */
 public final class CustomNpcsProviderAdapter implements ControlledMutationProvider {
@@ -49,6 +56,7 @@ public final class CustomNpcsProviderAdapter implements ControlledMutationProvid
         this.executionEnabled = executionEnabled;
         Map<String, ProviderCapabilityState> values = new LinkedHashMap<String, ProviderCapabilityState>();
         values.put(CapabilityVocabulary.ACTOR_SOURCE.getValue(), ProviderCapabilityState.MUTATION_VALIDATED);
+        values.put(CapabilityVocabulary.ENTITY_LIFECYCLE_CONTROL.getValue(), ProviderCapabilityState.MUTATION_VALIDATED);
         capabilities = Collections.unmodifiableMap(values);
         initialize();
     }
@@ -99,6 +107,20 @@ public final class CustomNpcsProviderAdapter implements ControlledMutationProvid
         } catch (RuntimeException failure) { FMLLog.log("sobrenaturaldirector", Level.ERROR, "CustomNPC controlled remove failed: %s", failure.toString()); return rejected(request); }
     }
 
+    @Override public ControlResult executeControl(ControlRequest raw, ControlExecutionContext context, long tick) {
+        if (!(raw instanceof EntityControlRequest) || context == null) return new ControlResult(ControlResultStatus.INVALID_REQUEST, "CustomNPC lifecycle requires server context");
+        EntityControlRequest request = (EntityControlRequest) raw;
+        if (request.getPosition() == null) return new ControlResult(ControlResultStatus.INVALID_REQUEST, "spawn position is required");
+        if (!PROVIDER_ID.equals(request.getProvider()) || request.getTarget().getOwnership() != com.sobrenaturaldirector.control.EntityOwnership.DIRECTOR_SPAWNED) return new ControlResult(ControlResultStatus.SAFETY_REJECTED, "Director ownership required");
+        MutationOperation operation = request.getOperation() == EntityLifecycleOperation.SPAWN ? MutationOperation.SPAWN_ENTITY : MutationOperation.REMOVE_ENTITY;
+        ControlledNpcRequest legacy = new ControlledNpcRequest(request.getMutationId(), "semantic-control", SOURCE, PROVIDER_ID, operation, context.getWorld(), request.getPosition().getDimension().getDimensionId(), request.getPosition().getX(), request.getPosition().getY(), request.getPosition().getZ(), request.getTarget().getId(), request.getDisplayName(), "DIRECTOR_NPC", SUPPORTED_VERSION, DirectorRuntimeMode.CONTROLLED_EXECUTION, true);
+        ProviderMutationResult result = operation == MutationOperation.SPAWN_ENTITY ? createControlledNpc(legacy, context.getSaved()) : removeControlledNpc(legacy, context.getSaved());
+        MutationExecutionResult.Status status = result.getResult().getStatus();
+        if (status == MutationExecutionResult.Status.EXECUTED || status == MutationExecutionResult.Status.ALREADY_EXECUTED || status == MutationExecutionResult.Status.ROLLBACK_EXECUTED) return new ControlResult(ControlResultStatus.APPLIED, status.name());
+        if (status == MutationExecutionResult.Status.REJECTED_POLICY || status == MutationExecutionResult.Status.REJECTED_DIMENSION) return new ControlResult(ControlResultStatus.SAFETY_REJECTED, status.name());
+        return new ControlResult(ControlResultStatus.FAILED, status.name());
+    }
+
     private boolean allowed(ControlledNpcRequest request, DirectorWorldSavedData saved, com.sobrenaturaldirector.mutation.runtime.MutationOperation operation) {
         if (request == null || saved == null) return false;
         boolean journalOk = operation == com.sobrenaturaldirector.mutation.runtime.MutationOperation.SPAWN_ENTITY
@@ -108,8 +130,8 @@ public final class CustomNpcsProviderAdapter implements ControlledMutationProvid
         return executionEnabled && request.isAuthorized() && request.getMode() == DirectorRuntimeMode.CONTROLLED_EXECUTION
                 && SOURCE.equals(request.getRequestSource()) && "DIRECTOR_NPC".equals(request.getOrigin())
                 && PROVIDER_ID.equals(request.getProviderId()) && operation == request.getOperation() && supported()
-                && SUPPORTED_VERSION.equals(request.getExpectedVersion()) && request.getDimension() == 0
-                && request.getWorld() != null && request.getWorld().provider.dimensionId == 0
+                && SUPPORTED_VERSION.equals(request.getExpectedVersion()) && request.getWorld() != null
+                && request.getDimension() == request.getWorld().provider.dimensionId
                 && journalOk
                 && request.getY() >= 0 && request.getY() < 256;
     }
@@ -123,6 +145,7 @@ public final class CustomNpcsProviderAdapter implements ControlledMutationProvid
     public java.util.Set<CapabilityPolicyBinding> getPolicyBindings() {
         java.util.Set<CapabilityPolicyBinding> values = new java.util.HashSet<CapabilityPolicyBinding>();
         values.add(new CapabilityPolicyBinding(CapabilityVocabulary.ACTOR_SOURCE, "customnpcs.controlled_actor_boundary"));
+        values.add(new CapabilityPolicyBinding(CapabilityVocabulary.ENTITY_LIFECYCLE_CONTROL, "customnpcs.director_owned_lifecycle"));
         return Collections.unmodifiableSet(values);
     }
 }

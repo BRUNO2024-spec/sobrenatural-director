@@ -81,7 +81,7 @@ public final class ControlledCompositionExecutor {
     private CompositionExecutionResult.Status preflight(WorldServer world, DirectorWorldSavedData saved, DirectorOwnedCompositionPlan plan) {
         if (world==null || saved==null) return CompositionExecutionResult.Status.PREFLIGHT_REJECTED;
         if (plan.getOperations().size()>DirectorOwnedCompositionPlan.MAX_BLOCKS) return CompositionExecutionResult.Status.REJECTED_TOO_MANY_BLOCKS;
-        if (plan.getDimension()!=0 || world.provider.dimensionId!=0) return CompositionExecutionResult.Status.REJECTED_PROVIDER_UNSUPPORTED;
+        if (plan.getDimension()!=world.provider.dimensionId) return CompositionExecutionResult.Status.REJECTED_PROVIDER_UNSUPPORTED;
         if (!policy.isProviderAvailable()) return CompositionExecutionResult.Status.REJECTED_PROVIDER_UNAVAILABLE;
         Set<String> targets=new HashSet<String>();
         for (CompositionBlockOperation op:plan.getOperations()) {
