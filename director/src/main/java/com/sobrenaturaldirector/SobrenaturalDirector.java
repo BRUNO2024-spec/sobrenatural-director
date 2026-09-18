@@ -29,6 +29,7 @@ import com.sobrenaturaldirector.shadow.ShadowObservationService;
 import com.sobrenaturaldirector.shadow.JsonlShadowV2EventWriter;
 import com.sobrenaturaldirector.shadow.ShadowRuntimeIdentity;
 import java.io.File;
+import com.sobrenaturaldirector.action.SemanticActionCatalog;
 
 @Mod(modid = SobrenaturalDirector.MOD_ID, name = SobrenaturalDirector.MOD_NAME,
         version = SobrenaturalDirector.VERSION, acceptedMinecraftVersions = "[1.7.10]",
@@ -46,6 +47,7 @@ public final class SobrenaturalDirector {
     private static ObservationCoordinator observationCoordinator;
     private static DirectorRuntimeCoordinator runtimeCoordinator;
     private static DirectorProviderRegistry providerRegistry;
+    private static SemanticActionCatalog actionCatalog;
     private static final SessionConsentRegistry consentRegistry = new SessionConsentRegistry();
     private static ShadowObservationService shadowService;
     private static JsonlShadowV2EventWriter v2Writer;
@@ -87,6 +89,8 @@ public final class SobrenaturalDirector {
             }
         }
         providerRegistry = new DirectorProviderRegistry();
+        actionCatalog = SemanticActionCatalog.standard();
+        logger.info("Semantic action catalog ready version={}, definitions={}, fingerprint={}", SemanticActionCatalog.VERSION, actionCatalog.size(), actionCatalog.fingerprint());
         com.sobrenaturaldirector.provider.DirectorContentProvider customNpcs = ProviderBootstrap.registerAll(providerRegistry, configuration);
         logger.info("Optional provider discovery complete; registeredProviderCount={}", providerRegistry.getProviders().size());
         for (com.sobrenaturaldirector.provider.DirectorContentProvider provider : providerRegistry.getProviders().values())
@@ -131,6 +135,7 @@ public final class SobrenaturalDirector {
     public static ObservationCoordinator getObservationCoordinator() { return observationCoordinator; }
     public static DirectorRuntimeCoordinator getRuntimeCoordinator() { return runtimeCoordinator; }
     public static DirectorProviderRegistry getProviderRegistry() { return providerRegistry; }
+    public static SemanticActionCatalog getActionCatalog() { return actionCatalog; }
     private static String safePrefix(String sha) { return sha == null || sha.length() < 8 ? "none" : sha.substring(0, 8); }
     /** High-level production preparation entry point used by validation and future controlled callers. */
     public static PreparedMultiProviderPlan prepareMultiProviderExecution(CandidatePlan plan, ExecutionPreparationContext context, String fingerprint) {
