@@ -41,6 +41,7 @@ models weapons as semantic item tags rather than a parallel resource domain.
 | GraveStone / `GraveStone` | BLOCKS, STRUCTURES, ITEMS, LOOT | RUNTIME_CONFIRMED | existing source/mutation provider |
 | Grue / `grue` | ENTITIES, THREATS | CONFIRMED_STATIC | deferred |
 | Herobrine / `herobrinemod` | ENTITIES, THREATS | CONFIRMED_STATIC | deferred |
+| Hide Names / `HideNames` | OTHER | CONFIRMED_STATIC | client/UI utility; deferred |
 | Hostile Mobs and Girls / `HMaG` | ENTITIES, MOBS, ITEMS, WEAPONS, BLOCKS | CONFIRMED_STATIC | deferred |
 | Human Mob Mod / `Humans` | ENTITIES, NPCS | CONFIRMED_STATIC | deferred |
 | Just a Few Fish / `jaff` | ENTITIES, MOBS, ITEMS, BLOCKS | CONFIRMED_STATIC | deferred |
@@ -50,6 +51,7 @@ models weapons as semantic item tags rather than a parallel resource domain.
 | Mob Dismemberment / `MobDismemberment` | ENTITIES, MOBS | CONFIRMED_STATIC | deferred |
 | Mob Properties / `MobProperties` | ENTITIES, MOBS, ITEMS, LOOT | CONFIRMED_STATIC | deferred |
 | Morph / `Morph` | ENTITIES, ACTORS | CONFIRMED_STATIC | deferred |
+| MultiMine / `AS_MultiMine` | BLOCKS | CONFIRMED_STATIC | transformer/utility; deferred |
 | Place Mod / nested archive | BLOCKS, STRUCTURES | CONFIRMED_STATIC | deferred; nested archive not installed |
 | Runic Dungeons / `runicdungeons` | BLOCKS, ITEMS, STRUCTURES, WORLDGEN | CONFIRMED_STATIC | deferred |
 | Shatter / `shatter` | ENTITIES, MOBS | CONFIRMED_STATIC | deferred |
@@ -65,7 +67,6 @@ models weapons as semantic item tags rather than a parallel resource domain.
 | Resident Evil / `residentevil` | ENTITIES, MOBS, ITEMS, EQUIPMENT, BLOCKS, WORLDGEN | CONFIRMED_STATIC | deferred |
 | Twilight Forest / `TwilightForest` | ENTITIES, MOBS, BLOCKS, ITEMS, STRUCTURES, WORLDGEN, DIMENSIONS | CONFIRMED_STATIC | deferred |
 | WorldEdit / `WorldEdit` | BLOCKS, STRUCTURES, REGIONS | CONFIRMED_STATIC | deferred; external tool boundary |
-| Armourers/Wings supporting content | EQUIPMENT | CONFIRMED_STATIC | no standalone provider |
 | Carpenters cached resources | BLOCKS | CONFIRMED_STATIC | resource archive only |
 | Obsidian API / `obsidianAPI` | OTHER | CONFIRMED_STATIC | excluded; client incompatibility |
 
@@ -91,15 +92,15 @@ mod can contribute to multiple columns.
 ```text
 IDENTIFIED_MOD_COUNT=46
 UNKNOWN_MOD_COUNT=13
-MODS_WITH_ENTITIES=25
-MODS_WITH_BLOCKS=16
-MODS_WITH_STRUCTURES=9
+MODS_WITH_ENTITIES=26
+MODS_WITH_BLOCKS=18
+MODS_WITH_STRUCTURES=7
 MODS_WITH_ITEMS=24
-MODS_WITH_WEAPONS=8
-MODS_WITH_EQUIPMENT=6
+MODS_WITH_WEAPONS=5
+MODS_WITH_EQUIPMENT=5
 MODS_WITH_DIMENSIONS=1
-MODS_WITH_WORLDGEN=7
-MODS_WITH_ENVIRONMENT_CONTENT=5
+MODS_WITH_WORLDGEN=5
+MODS_WITH_ENVIRONMENT_CONTENT=4
 ```
 
 These are planning counts. They do not assert that a provider currently
