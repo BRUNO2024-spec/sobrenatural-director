@@ -8,6 +8,7 @@ import com.sobrenaturaldirector.action.ActionExecutionStatus;
 import com.sobrenaturaldirector.action.ActionPlanExecutor;
 import com.sobrenaturaldirector.control.ControlExecutionContext;
 import com.sobrenaturaldirector.provider.DirectorProviderRegistry;
+import com.sobrenaturaldirector.persistence.DirectorWorldSavedData;
 
 /** Explicit caller-owned bridge from a validated situation to the shared executor. */
 public final class SituationExecutionService {
@@ -35,6 +36,16 @@ public final class SituationExecutionService {
                 Collections.<com.sobrenaturaldirector.content.model.ProviderId>emptyList(),
                 outcome == null ? 0 : outcome.getCompletedSteps()));
         return new Result(finished,outcome,"");
+    }
+    public Result executeAndPersist(SituationInstance instance, Map<String,ActionExecutionSpec> specs,
+            ControlExecutionContext context, SituationMemory memory, long tick, DirectorWorldSavedData data,
+            SituationPersistenceCoordinator persistence) {
+        if (data == null || persistence == null) throw new IllegalArgumentException("persistence boundary required");
+        // Critical identity is durable before any provider mutation is allowed.
+        persistence.save(data,instance);
+        Result result=execute(instance,specs,context,memory,tick);
+        persistence.save(data,result.getInstance());
+        return result;
     }
     private SituationLifecycleState map(ActionOutcome outcome) {
         if (outcome == null) return SituationLifecycleState.FAILED;

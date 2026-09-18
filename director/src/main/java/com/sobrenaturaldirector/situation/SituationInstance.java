@@ -43,6 +43,28 @@ public final class SituationInstance {
         ArrayList<SituationLifecycleTransition> all=new ArrayList<SituationLifecycleTransition>(old.transitions); all.add(transition);
         this.transitions=Collections.unmodifiableList(all);
     }
+    /** Persistence boundary: only immutable DTO fields may call this method. */
+    public static SituationInstance restore(String id, SituationGoal goal, SituationBlueprint blueprint, String threadId,
+            DimensionRef originDimension, DimensionRef relevantDimension, String contextFingerprint,
+            String providerFingerprint, String contentFingerprint, ActionPlan actionPlan,
+            SituationLifecycleState state, long creationTick, long lastTransitionTick, ActionOutcome outcome,
+            List<SituationLifecycleTransition> transitions) {
+        if (state == null || transitions == null || creationTick < 0 || lastTransitionTick < creationTick)
+            throw new IllegalArgumentException("invalid persisted situation");
+        SituationInstance value = new SituationInstance(id,goal,blueprint,threadId,originDimension,relevantDimension,
+                contextFingerprint,providerFingerprint,contentFingerprint,actionPlan,creationTick);
+        value = new SituationInstance(value,state,lastTransitionTick,outcome,transitions);
+        return value;
+    }
+    private SituationInstance(SituationInstance base, SituationLifecycleState state, long tick,
+            ActionOutcome outcome, List<SituationLifecycleTransition> transitions) {
+        this.id=base.id; this.goal=base.goal; this.blueprint=base.blueprint; this.threadId=base.threadId;
+        this.originDimension=base.originDimension; this.relevantDimension=base.relevantDimension;
+        this.contextFingerprint=base.contextFingerprint; this.providerFingerprint=base.providerFingerprint;
+        this.contentFingerprint=base.contentFingerprint; this.actionPlan=base.actionPlan; this.state=state;
+        this.creationTick=base.creationTick; this.lastTransitionTick=tick; this.outcome=outcome;
+        this.transitions=Collections.unmodifiableList(new ArrayList<SituationLifecycleTransition>(transitions));
+    }
     public SituationInstance transition(SituationLifecycleState to, String reason, long tick, String trigger) {
         return new SituationInstance(this, SituationLifecycle.transition(state,to,reason,tick,trigger), outcome);
     }

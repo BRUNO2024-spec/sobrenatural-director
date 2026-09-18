@@ -14,7 +14,7 @@ public final class SituationLifecycle {
         switch (from) {
         case PLANNED: return to == SituationLifecycleState.READY || to == SituationLifecycleState.STALE || to == SituationLifecycleState.ABORTED;
         case READY: return to == SituationLifecycleState.EXECUTING || to == SituationLifecycleState.STALE || to == SituationLifecycleState.ABORTED;
-        case EXECUTING: return to == SituationLifecycleState.ACTIVE || to == SituationLifecycleState.WAITING || to == SituationLifecycleState.COMPLETED || to == SituationLifecycleState.ABORTED || to == SituationLifecycleState.FAILED || to == SituationLifecycleState.COMPENSATED || to == SituationLifecycleState.STALE;
+        case EXECUTING: return to == SituationLifecycleState.ACTIVE || to == SituationLifecycleState.WAITING || to == SituationLifecycleState.SUSPENDED || to == SituationLifecycleState.COMPLETED || to == SituationLifecycleState.ABORTED || to == SituationLifecycleState.FAILED || to == SituationLifecycleState.COMPENSATED || to == SituationLifecycleState.STALE;
         case ACTIVE: return to == SituationLifecycleState.WAITING || to == SituationLifecycleState.SUSPENDED || to == SituationLifecycleState.COMPLETED || to == SituationLifecycleState.ABORTED || to == SituationLifecycleState.FAILED;
         case WAITING: return to == SituationLifecycleState.ACTIVE || to == SituationLifecycleState.SUSPENDED || to == SituationLifecycleState.COMPLETED || to == SituationLifecycleState.ABORTED || to == SituationLifecycleState.STALE;
         case SUSPENDED: return to == SituationLifecycleState.ACTIVE || to == SituationLifecycleState.WAITING || to == SituationLifecycleState.ABORTED || to == SituationLifecycleState.STALE;
