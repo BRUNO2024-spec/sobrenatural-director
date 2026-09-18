@@ -5,6 +5,8 @@ import java.util.*;
 import org.junit.Test;
 import com.sobrenaturaldirector.control.*;
 import com.sobrenaturaldirector.content.model.*;
+import com.sobrenaturaldirector.provider.*;
+import com.sobrenaturaldirector.decision.model.ProviderStatus;
 
 public class WorldContentControlFoundationTest {
     private static final ProviderId PROVIDER = new ProviderId("fixture");
@@ -45,4 +47,24 @@ public class WorldContentControlFoundationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void positionCannotOmitDimension() { new WorldPositionRef(null, 0, 0, 0); }
+
+    @Test public void routerFailsClosedAcrossProviderAndLeaseBoundaries() {
+        final ProviderId id = new ProviderId("router-fixture");
+        DirectorProviderRegistry registry = new DirectorProviderRegistry();
+        registry.register(new DirectorContentProvider() {
+            public ProviderId getProviderId(){return id;} public String getModId(){return "fixture";}
+            public boolean isAvailable(){return true;} public String getDetectedVersion(){return "1";}
+            public ProviderStatus getStatus(){return ProviderStatus.AVAILABLE_SUPPORTED;}
+            public Map<String,ProviderCapabilityState> getCapabilities(){return Collections.singletonMap(CAPABILITY.getValue(), ProviderCapabilityState.MUTATION_VALIDATED);}
+            public ControlResult executeControl(com.sobrenaturaldirector.control.ControlRequest request,long tick){return new ControlResult(ControlResultStatus.APPLIED,"fixture");}
+        });
+        ConcreteControlRouter router = new ConcreteControlRouter(registry);
+        DimensionRef dimension = new DimensionRef(9);
+        EntityRef entity = new EntityRef("e", dimension, EntityOwnership.DIRECTOR_SPAWNED);
+        EntityControlRequest request = new EntityControlRequest(id, CAPABILITY, entity, lease(), ControlAuthority.LIMITED_CONTROL);
+        assertEquals(ControlResultStatus.APPLIED, router.execute(request, 2).getStatus());
+        assertEquals(ControlResultStatus.STALE_TARGET, router.execute(request, 11).getStatus());
+        registry.unregister(id);
+        assertEquals(ControlResultStatus.PROVIDER_UNAVAILABLE, router.execute(request, 2).getStatus());
+    }
 }
