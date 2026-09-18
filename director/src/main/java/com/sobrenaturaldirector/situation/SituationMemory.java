@@ -12,7 +12,7 @@ public final class SituationMemory {
     public static final int MAX_THREAT_OUTCOMES = 16;
     private final Deque<SituationMemoryEntry> entries = new ArrayDeque<SituationMemoryEntry>();
     private final Deque<ConfirmedThreatOutcome> threatOutcomes = new ArrayDeque<ConfirmedThreatOutcome>();
-    public void record(SituationMemoryEntry entry) { if (entry == null) return; if (entries.size() == MAX_ENTRIES) entries.removeFirst(); entries.addLast(entry); }
+    public void record(SituationMemoryEntry entry) { if (entry == null) return; for (SituationMemoryEntry existing : entries) if (existing.getId().equals(entry.getId())) return; if (entries.size() == MAX_ENTRIES) entries.removeFirst(); entries.addLast(entry); }
     public List<SituationMemoryEntry> snapshot() { return Collections.unmodifiableList(new ArrayList<SituationMemoryEntry>(entries)); }
     public int recentGoalCount(SituationGoal goal, long tick, long window) { int count = 0; for (SituationMemoryEntry e : entries) if (e.getGoal() == goal && tick >= e.getTick() && tick - e.getTick() <= window) count++; return count; }
     public int recentRegionCount(SituationGoal goal, int x, int z, long tick, long window) { int count = 0; for (SituationMemoryEntry e : entries) if (e.getGoal() == goal && e.getRegionX() == x && e.getRegionZ() == z && tick >= e.getTick() && tick - e.getTick() <= window) count++; return count; }

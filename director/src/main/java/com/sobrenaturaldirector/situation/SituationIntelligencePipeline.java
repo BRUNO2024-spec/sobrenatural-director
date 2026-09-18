@@ -6,6 +6,8 @@ import com.sobrenaturaldirector.capability.CandidatePlan;
 import com.sobrenaturaldirector.capability.CapabilityPlanner;
 import com.sobrenaturaldirector.capability.DecisionTrace;
 import com.sobrenaturaldirector.provider.DirectorProviderRegistry;
+import com.sobrenaturaldirector.action.SemanticActionCatalog;
+import com.sobrenaturaldirector.control.DimensionRef;
 
 /** Advisory-only pipeline from immutable context to a capability plan. */
 public final class SituationIntelligencePipeline {
@@ -37,6 +39,14 @@ public final class SituationIntelligencePipeline {
         List<CandidatePlan> plans = new CapabilityPlanner(registry).plan(new com.sobrenaturaldirector.capability.SituationIntent("situation:" + selected.getGoal().name(), derived), context.toPlannerContext(), null, trace);
         CandidatePlan plan = plans.isEmpty() ? null : plans.get(0);
         return new SituationDecision(context, candidates, selected, derived, plan, selectedBlueprint, blueprintCandidates);
+    }
+    /** Explicit opt-in composition entrypoint; evaluate() above remains plan-only. */
+    public SituationInstance composeExecutable(SituationContext context, SituationMemory memory,
+            DirectorProviderRegistry registry, SemanticActionCatalog catalog, String threadId) {
+        SituationDecision decision = evaluate(context, memory, registry, new DecisionTrace());
+        if (context == null) throw new IllegalArgumentException("context required");
+        return new SituationComposer().compose(decision,
+                new DimensionRef(context.getDimension(), "context", context.getEnvironment(), true), catalog, threadId);
     }
     private static List<com.sobrenaturaldirector.content.model.SemanticCapability> append(List<com.sobrenaturaldirector.content.model.SemanticCapability> source, com.sobrenaturaldirector.content.model.SemanticCapability value) { java.util.ArrayList<com.sobrenaturaldirector.content.model.SemanticCapability> result = new java.util.ArrayList<com.sobrenaturaldirector.content.model.SemanticCapability>(source); result.add(value); return result; }
 }
