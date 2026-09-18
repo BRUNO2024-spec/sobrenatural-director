@@ -115,7 +115,8 @@ public final class CustomNpcsProviderAdapter implements ControlledMutationProvid
         MutationOperation operation = request.getOperation() == EntityLifecycleOperation.SPAWN ? MutationOperation.SPAWN_ENTITY : MutationOperation.REMOVE_ENTITY;
         ControlledNpcRequest legacy = new ControlledNpcRequest(request.getMutationId(), "semantic-control", SOURCE, PROVIDER_ID, operation, context.getWorld(), request.getPosition().getDimension().getDimensionId(), request.getPosition().getX(), request.getPosition().getY(), request.getPosition().getZ(), request.getTarget().getId(), request.getDisplayName(), "DIRECTOR_NPC", SUPPORTED_VERSION, DirectorRuntimeMode.CONTROLLED_EXECUTION, true);
         ProviderMutationResult result = operation == MutationOperation.SPAWN_ENTITY ? createControlledNpc(legacy, context.getSaved()) : removeControlledNpc(legacy, context.getSaved());
-        MutationExecutionResult.Status status = result.getResult().getStatus();
+         MutationExecutionResult.Status status = result.getResult().getStatus();
+         FMLLog.log("sobrenaturaldirector", Level.INFO, "CustomNPC semantic lifecycle operation=%s mutation=%s result=%s", operation, request.getMutationId(), status);
         if (status == MutationExecutionResult.Status.EXECUTED || status == MutationExecutionResult.Status.ALREADY_EXECUTED || status == MutationExecutionResult.Status.ROLLBACK_EXECUTED) return new ControlResult(ControlResultStatus.APPLIED, status.name());
         if (status == MutationExecutionResult.Status.REJECTED_POLICY || status == MutationExecutionResult.Status.REJECTED_DIMENSION) return new ControlResult(ControlResultStatus.SAFETY_REJECTED, status.name());
         return new ControlResult(ControlResultStatus.FAILED, status.name());

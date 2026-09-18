@@ -8,3 +8,9 @@
 | investigation composite | PASS | PLAN_ONLY | PLAN_ONLY | NO |
 | threat presence composite | PASS | PLAN_ONLY | PLAN_ONLY | NO |
 | ambush/boss | unavailable reason tested | unavailable | unavailable | NO |
+
+## Controlled executor closure
+
+The disposable reobfuscated harness now runs the semantic plan through
+`ActionPlanExecutor` and `ConcreteControlRouter` for CustomNPCs, SlenderMan and
+GraveStone. Public runtime remains PLAN_ONLY.

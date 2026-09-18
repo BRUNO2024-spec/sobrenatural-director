@@ -10,6 +10,10 @@ import com.sobrenaturaldirector.decision.model.ProviderStatus;
 import com.sobrenaturaldirector.provider.DirectorContentProvider;
 import com.sobrenaturaldirector.provider.ProviderCapabilityState;
 import cpw.mods.fml.common.Loader;
+import com.sobrenaturaldirector.control.*;
+import com.sobrenaturaldirector.composition.ControlledCompositionExecutor;
+import com.sobrenaturaldirector.composition.GraveStoneCompositionPolicy;
+import com.sobrenaturaldirector.runtime.DirectorRuntimeMode;
 
 /** GraveStone metadata adapter; it exposes only capabilities proven by 1L.2A. */
 public final class GraveStoneCapabilityProvider implements DirectorContentProvider {
@@ -17,11 +21,16 @@ public final class GraveStoneCapabilityProvider implements DirectorContentProvid
     public static final String MOD_ID = "GraveStone";
     public static final String SUPPORTED_VERSION = "2.13.0";
     private final boolean enabled;
+    private final boolean executionEnabled;
     private final Map<String, ProviderCapabilityState> capabilities;
     private ProviderStatus status;
     private String version;
     public GraveStoneCapabilityProvider(boolean enabled) {
+        this(enabled, false);
+    }
+    public GraveStoneCapabilityProvider(boolean enabled, boolean executionEnabled) {
         this.enabled = enabled;
+        this.executionEnabled = executionEnabled;
         Map<String, ProviderCapabilityState> values = new LinkedHashMap<String, ProviderCapabilityState>();
         values.put(CapabilityVocabulary.BLOCK_MUTATION.getValue(), ProviderCapabilityState.MUTATION_VALIDATED);
         values.put(CapabilityVocabulary.ROLLBACK_SAFE.getValue(), ProviderCapabilityState.MUTATION_VALIDATED);
@@ -45,4 +54,23 @@ public final class GraveStoneCapabilityProvider implements DirectorContentProvid
     public ProviderStatus getStatus() { return status; }
     public Map<String, ProviderCapabilityState> getCapabilities() { return capabilities; }
     public java.util.Set<CapabilityPolicyBinding> getPolicyBindings() { java.util.Set<CapabilityPolicyBinding> values = new java.util.HashSet<CapabilityPolicyBinding>(); values.add(new CapabilityPolicyBinding(CapabilityVocabulary.BLOCK_MUTATION, "gravestone.allowlisted_blocks")); values.add(new CapabilityPolicyBinding(CapabilityVocabulary.ROLLBACK_SAFE, "director.stale_safe_rollback")); values.add(new CapabilityPolicyBinding(CapabilityVocabulary.STRUCTURE_SOURCE, "gravestone.allowlisted_structure")); return Collections.unmodifiableSet(values); }
+    @Override public ControlResult executeControl(ControlRequest raw, ControlExecutionContext context, long tick) {
+        if (!(raw instanceof StructureControlRequest) || context == null) return new ControlResult(ControlResultStatus.INVALID_REQUEST, "structure control requires server context");
+        StructureControlRequest request = (StructureControlRequest) raw;
+        if (!PROVIDER_ID.equals(request.getProvider()) || request.getPlan().getDimension() != context.getWorld().provider.dimensionId)
+            return new ControlResult(ControlResultStatus.SAFETY_REJECTED, "structure ownership or dimension rejected");
+        if (!executionEnabled || request.getAuthority() != ControlAuthority.FULL_DIRECTOR_CONTROL)
+            return new ControlResult(ControlResultStatus.SAFETY_REJECTED, "controlled structure execution disabled");
+        ControlledCompositionExecutor executor = new ControlledCompositionExecutor(DirectorRuntimeMode.CONTROLLED_EXECUTION, new GraveStoneCompositionPolicy());
+        if (request.getOperation() == StructureControlRequest.Operation.APPLY) {
+            com.sobrenaturaldirector.composition.model.CompositionExecutionResult result = executor.execute(context.getWorld(), context.getSaved(), request.getPlan(), true);
+            return result.getStatus() == com.sobrenaturaldirector.composition.model.CompositionExecutionResult.Status.EXECUTED
+                    ? new ControlResult(ControlResultStatus.APPLIED, result.getStatus().name())
+                    : new ControlResult(ControlResultStatus.FAILED, result.getStatus().name());
+        }
+        com.sobrenaturaldirector.composition.model.CompositionExecutionResult result = executor.rollback(context.getWorld(), context.getSaved(), request.getPlan().getCompositionId());
+        if (result.getStatus() == com.sobrenaturaldirector.composition.model.CompositionExecutionResult.Status.ROLLBACK_EXECUTED) return new ControlResult(ControlResultStatus.APPLIED, result.getStatus().name());
+        if (result.getStatus() == com.sobrenaturaldirector.composition.model.CompositionExecutionResult.Status.ROLLBACK_REJECTED_STALE) return new ControlResult(ControlResultStatus.STALE_TARGET, result.getStatus().name());
+        return new ControlResult(ControlResultStatus.FAILED, result.getStatus().name());
+    }
 }

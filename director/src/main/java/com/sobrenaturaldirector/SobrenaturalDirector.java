@@ -30,6 +30,8 @@ import com.sobrenaturaldirector.shadow.JsonlShadowV2EventWriter;
 import com.sobrenaturaldirector.shadow.ShadowRuntimeIdentity;
 import java.io.File;
 import com.sobrenaturaldirector.action.SemanticActionCatalog;
+import com.sobrenaturaldirector.action.ActionExecutionBindingRegistry;
+import com.sobrenaturaldirector.action.ActionPlanExecutor;
 
 @Mod(modid = SobrenaturalDirector.MOD_ID, name = SobrenaturalDirector.MOD_NAME,
         version = SobrenaturalDirector.VERSION, acceptedMinecraftVersions = "[1.7.10]",
@@ -48,6 +50,7 @@ public final class SobrenaturalDirector {
     private static DirectorRuntimeCoordinator runtimeCoordinator;
     private static DirectorProviderRegistry providerRegistry;
     private static SemanticActionCatalog actionCatalog;
+    private static ActionPlanExecutor actionPlanExecutor;
     private static final SessionConsentRegistry consentRegistry = new SessionConsentRegistry();
     private static ShadowObservationService shadowService;
     private static JsonlShadowV2EventWriter v2Writer;
@@ -90,7 +93,11 @@ public final class SobrenaturalDirector {
         }
         providerRegistry = new DirectorProviderRegistry();
         actionCatalog = SemanticActionCatalog.standard();
+        ActionExecutionBindingRegistry actionBindings = ActionExecutionBindingRegistry.standard();
+        if (actionBindings.unboundExecutableCount(actionCatalog) != 0) throw new IllegalStateException("unbound executable semantic action");
+        actionPlanExecutor = new ActionPlanExecutor(providerRegistry, actionCatalog, actionBindings);
         logger.info("Semantic action catalog ready version={}, definitions={}, fingerprint={}", SemanticActionCatalog.VERSION, actionCatalog.size(), actionCatalog.fingerprint());
+        logger.info("ActionPlanExecutor ready boundExecutable={}, unboundExecutable={}", actionBindings.boundExecutableCount(actionCatalog), actionBindings.unboundExecutableCount(actionCatalog));
         com.sobrenaturaldirector.provider.DirectorContentProvider customNpcs = ProviderBootstrap.registerAll(providerRegistry, configuration);
         logger.info("Optional provider discovery complete; registeredProviderCount={}", providerRegistry.getProviders().size());
         for (com.sobrenaturaldirector.provider.DirectorContentProvider provider : providerRegistry.getProviders().values())
@@ -136,6 +143,7 @@ public final class SobrenaturalDirector {
     public static DirectorRuntimeCoordinator getRuntimeCoordinator() { return runtimeCoordinator; }
     public static DirectorProviderRegistry getProviderRegistry() { return providerRegistry; }
     public static SemanticActionCatalog getActionCatalog() { return actionCatalog; }
+    public static ActionPlanExecutor getActionPlanExecutor() { return actionPlanExecutor; }
     private static String safePrefix(String sha) { return sha == null || sha.length() < 8 ? "none" : sha.substring(0, 8); }
     /** High-level production preparation entry point used by validation and future controlled callers. */
     public static PreparedMultiProviderPlan prepareMultiProviderExecution(CandidatePlan plan, ExecutionPreparationContext context, String fingerprint) {

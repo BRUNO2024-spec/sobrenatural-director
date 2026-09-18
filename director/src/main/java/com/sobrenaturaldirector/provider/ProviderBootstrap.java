@@ -18,7 +18,7 @@ public final class ProviderBootstrap {
     public static DirectorContentProvider registerAll(DirectorProviderRegistry registry, FoundationConfig configuration) {
         CustomNpcsProviderAdapter customNpcs = new CustomNpcsProviderAdapter(configuration.isCustomNpcsProviderEnabled(), configuration.isExecutionEnabled());
         registry.registerIfAvailable(customNpcs);
-        registry.registerIfAvailable(new GraveStoneCapabilityProvider(true));
+        registry.registerIfAvailable(new GraveStoneCapabilityProvider(true, configuration.isExecutionEnabled()));
         SlenderManThreatProvider slenderMan = new SlenderManThreatProvider(true, configuration.isExecutionEnabled());
         registry.registerIfAvailable(slenderMan);
         return customNpcs;
