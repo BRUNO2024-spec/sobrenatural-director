@@ -30,6 +30,8 @@ import com.sobrenaturaldirector.composition.model.CompositionRequest;
 import com.sobrenaturaldirector.composition.model.CompositionResult;
 import com.sobrenaturaldirector.composition.model.StructureScale;
 import com.sobrenaturaldirector.derivation.DecisionContextAssembler;
+import com.sobrenaturaldirector.derivation.DecisionContextLiveSources;
+import com.sobrenaturaldirector.derivation.DecisionContextMetrics;
 import com.sobrenaturaldirector.derivation.DerivedModels;
 import com.sobrenaturaldirector.derivation.ObservationDerivationPipeline;
 import com.sobrenaturaldirector.domain.DirectorWorldState;
@@ -151,16 +153,19 @@ public final class DirectorRuntimeCoordinator {
             DerivedModels derived = derivation.derive(frame);
             Map<java.util.UUID, com.sobrenaturaldirector.decision.model.DecisionContext> perPlayer =
                     new HashMap<java.util.UUID, com.sobrenaturaldirector.decision.model.DecisionContext>(contexts.assemblePerPlayer(derived, new HistorySummaryBuilder().empty()));
-            for (com.sobrenaturaldirector.observation.model.PlayerSnapshot player : frame.getPlayers()) {
-                com.sobrenaturaldirector.decision.model.DecisionContext context = perPlayer.get(player.getPlayerId());
-                if (context == null) continue;
+             for (com.sobrenaturaldirector.observation.model.PlayerSnapshot player : frame.getPlayers()) {
+                 com.sobrenaturaldirector.decision.model.DecisionContext context = perPlayer.get(player.getPlayerId());
+                 if (context == null) continue;
                 RegionKey key = RegionKey.fromChunk(player.getDimension(), (int) Math.floor(player.getX()) >> 4,
                         (int) Math.floor(player.getZ()) >> 4);
                 com.sobrenaturaldirector.environment.model.SemanticRegionProfile profile = environment.get(key);
-                if (profile != null) perPlayer.put(player.getPlayerId(), context.withEnvironmentProfile(profile));
-                com.sobrenaturaldirector.decision.model.DecisionContext pacedContext=perPlayer.get(player.getPlayerId());
-                if (pacedContext != null) latestPacing.put(player.getPlayerId(), pacing.assess(player.getPlayerId().toString()+":"+player.getDimension()+":"+key.getX()+":"+key.getZ(), pacedContext, saved.getPacingHistory(), Intent.NO_ACTION));
-            }
+                 if (profile != null) context=context.withEnvironmentProfile(profile);
+                 com.sobrenaturaldirector.narrative.PacingAssessment pacingAssessment=pacing.assess(player.getPlayerId().toString()+":"+player.getDimension()+":"+key.getX()+":"+key.getZ(), context, saved.getPacingHistory(), Intent.NO_ACTION);
+                 com.sobrenaturaldirector.model.player.PlayerModel playerModel=null;for(com.sobrenaturaldirector.model.player.PlayerModel candidate:derived.getPlayers())if(candidate.getPlayerId().equals(player.getPlayerId())){playerModel=candidate;break;}
+                 com.sobrenaturaldirector.model.world.WorldModel worldModel=null;for(com.sobrenaturaldirector.model.world.WorldModel candidate:derived.getWorlds())if(candidate.getDimension()==player.getDimension()){worldModel=candidate;break;}
+                 if(playerModel!=null&&worldModel!=null){Set<String> liveLocationTags=new java.util.LinkedHashSet<String>();if(profile!=null)liveLocationTags.add("REGION_"+profile.getClassification().name());context=contexts.assemble(playerModel,worldModel,new HistorySummaryBuilder().empty(),new DecisionContextLiveSources(pacingAssessment,profile,providerRegistry,activeEventConcurrency(saved),Collections.<String>emptySet(),liveLocationTags));}
+                 perPlayer.put(player.getPlayerId(),context);latestPacing.put(player.getPlayerId(),pacingAssessment);
+             }
             if (perPlayer.isEmpty()) {
                 executeArmedPersistentPlan(tick, world, saved);
                 metrics.noAction();
@@ -180,6 +185,8 @@ public final class DirectorRuntimeCoordinator {
                     Intent.NO_ACTION, null, 0, "ABORTED", "ABORTED", 0, "EVALUATION_EXCEPTION");
         }
     }
+
+    private int activeEventConcurrency(DirectorWorldSavedData saved){int count=0;for(com.sobrenaturaldirector.narrative.PersistentNarrativePlan p:saved.getNarrativePlans())if(!p.getState().isTerminal())count++;for(com.sobrenaturaldirector.narrative.PersistentNarrativeThread t:saved.getNarrativeThreads())if(!t.isTerminal())count++;for(DirectorWorldState.DirectorEventState e:saved.getState().getEvents())if(!"COOLDOWN".equals(e.lifecycle))count++;return count;}
 
     /** Test-only no-player fixture: it still traverses the production scheduler and plan ledger. */
     private void executeArmedPersistentPlan(long tick, WorldServer world, DirectorWorldSavedData saved) {
@@ -409,6 +416,7 @@ public final class DirectorRuntimeCoordinator {
     public DirectorRuntimeMode getMode() { return DirectorRuntimeMode.DRY_RUN; }
     public DirectorDryRunResult getLatestResult() { return latest; }
     public com.sobrenaturaldirector.narrative.PacingAssessment getLatestPacing(java.util.UUID playerId) { return latestPacing.get(playerId); }
+    public DecisionContextMetrics getDecisionContextMetrics(){return contexts.getMetrics();}
     public DirectorRuntimeMetrics getMetrics() { return metrics; }
     public DryRunMutationSink getMutationSink() { return sink; }
     public ControlledCompositionExecutor getControlledCompositionExecutor() { return controlledComposition; }

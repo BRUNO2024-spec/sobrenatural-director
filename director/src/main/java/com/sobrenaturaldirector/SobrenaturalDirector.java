@@ -89,7 +89,9 @@ public final class SobrenaturalDirector {
         providerRegistry = new DirectorProviderRegistry();
         com.sobrenaturaldirector.provider.DirectorContentProvider customNpcs = ProviderBootstrap.registerAll(providerRegistry, configuration);
         logger.info("Optional providers registered; latest provider status={}, version={}", customNpcs.getStatus(), customNpcs.getDetectedVersion());
+        if (v2Writer != null) v2Writer.bindCohortMetadata("REAL_ACTION_STACK_V1", "DECISION_CONTEXT_LIVE_V1", com.sobrenaturaldirector.provider.ProviderStackFingerprint.of(providerRegistry), "SAFE_DEFAULT_V1", "RESEARCH_ACTION_POLICY_PENDING");
         runtimeCoordinator = new DirectorRuntimeCoordinator(observationCoordinator, configuration, providerRegistry, shadowService);
+        if (v2Writer != null) v2Writer.bindContextMetrics(runtimeCoordinator.getDecisionContextMetrics());
         if (!observationRegistered) {
             FMLCommonHandler.instance().bus().register(new DirectorRuntimeTickHandler(observationCoordinator,
                     runtimeCoordinator));
