@@ -17,4 +17,18 @@ public final class SemanticCatalog {
     }
     public Map<ProviderId,ProviderDescriptor> getProviders(){return providers;}public Map<ContentKey,SemanticContentEntry> getEntries(){return entries;}public Map<SemanticCapability,Set<ContentKey>> getCapabilityIndex(){return byCapability;}
     public SemanticContentEntry get(ContentKey key){return entries.get(key);}
+    /** Stable catalog identity; ordering is provider/key/capability sorted. */
+    public String fingerprint() {
+        try {
+            java.security.MessageDigest digest=java.security.MessageDigest.getInstance("SHA-256");
+            for (ProviderDescriptor p:providers.values()) add(digest,"P|"+p.getId().getValue()+"|"+p.getVersion()+"\n");
+            for (SemanticContentEntry e:entries.values()) {
+                add(digest,"E|"+e.getKey()+"|"+e.getProvider()+"|"+e.getKind()+"|"+e.getEvidence()+"|"+e.getProvenance()+"|"+e.isRegistryResolvable()+"|"+e.isAdapterRequired()+"|"+e.getExecution()+"\n");
+                for(SemanticCapability c:e.getCapabilities()) add(digest,"C|"+c.getValue()+"\n");
+                for(String source:e.getSources()) add(digest,"S|"+source+"\n");
+            }
+            byte[] bytes=digest.digest(); StringBuilder out=new StringBuilder(); for(byte b:bytes) out.append(String.format(java.util.Locale.ENGLISH,"%02x",b&255)); return out.toString();
+        } catch (java.security.NoSuchAlgorithmException e) { throw new IllegalStateException("SHA-256 unavailable",e); }
+    }
+    private static void add(java.security.MessageDigest digest,String value) { try { digest.update(value.getBytes("UTF-8")); } catch(java.io.UnsupportedEncodingException e) { throw new IllegalStateException(e); } }
 }
