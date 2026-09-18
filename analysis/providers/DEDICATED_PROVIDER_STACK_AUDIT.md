@@ -24,3 +24,18 @@ The isolated tests prove boot/world-load behavior only for the baseline Director
 JAR. They do not prove
 provider-backed action execution, client handshake compatibility, or safe
 content mutation. Those remain mandatory gates before deployment.
+
+## Phase 1 final reobfuscated validation
+
+Using Director JAR SHA
+`4a63c2bef252c0bc11c9d75ece950ae31b1585152ba1ae54145069b6803dc911` in
+disposable servers, the Director-only scenario registered zero providers; each
+single-provider scenario registered exactly its expected provider; and the
+approved three-provider scenario registered all three providers and five
+semantic capability entries. All scenarios reached Forge `Done` and shut down
+cleanly. The public server subsequently booted the same stack with registry
+count `3` and no fatal classloading errors.
+
+The three GraveStone `Data not found. Trying to load backup data` messages were
+reproduced in disposable and public fresh-load paths and remain a documented
+upstream data warning, not a Director fatal error.

@@ -28,6 +28,12 @@ public final class DirectorProviderRegistry {
         descriptors.put(provider.getProviderId(), new ProviderDescriptor(provider.getProviderId(), provider.getModId(), com.sobrenaturaldirector.content.model.EvidenceStatus.CONFIRMED, true, provider.getStatus(), false, Collections.<String>emptySet(), provider.getDetectedVersion(), capabilities, provider.getPolicyBindings(), provider.isAvailable() ? ProviderAvailability.RUNTIME_CONTROL : ProviderAvailability.DETECTED));
         revision++;
     }
+    /** Registers only a provider that passed its runtime availability gate. */
+    public boolean registerIfAvailable(DirectorContentProvider provider) {
+        if (provider == null || !provider.isAvailable()) return false;
+        register(provider);
+        return true;
+    }
     public void registerDescriptor(ProviderDescriptor descriptor) { if (descriptor == null || descriptor.getId() == null) throw new IllegalArgumentException("descriptor is required"); if (descriptors.put(descriptor.getId(), descriptor) != null) throw new IllegalArgumentException("duplicate provider descriptor"); revision++; }
     public boolean unregister(ProviderId id) { if (id == null) return false; boolean removed = providers.remove(id) != null; boolean descriptor = descriptors.remove(id) != null; if (descriptor || removed) revision++; return descriptor || removed; }
     public int getRevision() { return revision; }

@@ -12,6 +12,8 @@ public interface DirectorContentProvider {
     String getModId();
     boolean isAvailable();
     String getDetectedVersion();
+    /** Version of the Director-side adapter contract, not the external mod. */
+    default String getAdapterVersion() { return "1"; }
     ProviderStatus getStatus();
     Map<String, ProviderCapabilityState> getCapabilities();
     default java.util.Set<CapabilityPolicyBinding> getPolicyBindings() { return Collections.emptySet(); }

@@ -17,10 +17,10 @@ public final class ProviderBootstrap {
     private ProviderBootstrap() { }
     public static DirectorContentProvider registerAll(DirectorProviderRegistry registry, FoundationConfig configuration) {
         CustomNpcsProviderAdapter customNpcs = new CustomNpcsProviderAdapter(configuration.isCustomNpcsProviderEnabled(), configuration.isExecutionEnabled());
-        registry.register(customNpcs);
-        registry.register(new GraveStoneCapabilityProvider(true));
+        registry.registerIfAvailable(customNpcs);
+        registry.registerIfAvailable(new GraveStoneCapabilityProvider(true));
         SlenderManThreatProvider slenderMan = new SlenderManThreatProvider(true, configuration.isExecutionEnabled());
-        if (slenderMan.isAvailable()) registry.register(slenderMan);
+        registry.registerIfAvailable(slenderMan);
         return customNpcs;
     }
     public static ExternalBlockPolicy blockPolicy() { return new GraveStoneCompositionPolicy(); }
